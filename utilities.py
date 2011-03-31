@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 #From http://code.activestate.com/recipes/550804-create-a-restricted-python-function-from-a-string/
 #except we don't restrict input
