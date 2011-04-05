@@ -34,20 +34,61 @@ class MealyProcess:
     
     inputPartitionSize = self._partitionFunction(self._state)
     inputEvents = []
-    for i in range(inputPartitionSize)
+    for i in range(inputPartitionSize):
       inputEvents.append(self._inputSignal.pop(0))
     outputEvents = self._outputFunction(self._state, inputEvents)
     self._state = self._nextStateFunction(self._state, inputEvents)
-    self._outputSignal.append(self._outputEvents)
+    self._outputSignal.append(outputEvents)
     
-#a little bit of sample code, so I don't forget what I meant for this to do:
+class ZipProcess:
+  def __init__(self, signal1Count, signal2Count, inputSignal1, inputSignal2, outputSignal):
+    self._signal1Count = signal1Count
+    self._signal2Count = signal2Count
+    self._inputSignal1 = inputSignal1
+    self._inputSignal2 = inputSignal2
+    self._outputSignal = outputSignal
+    
+  def runOneStep(self):
+    signal1Events = []
+    for i in range(self._signal1Count):
+      signal1Events.append(self._inputSignal1.pop(0))
+    signal2Events = []
+    for i in range(self._signal2Count):
+      signal2Events.append(self._inputSignal2.pop(0))
+    outputEvents = (signal1Events, signal2Events)
+    self._outputSignal.append(outputEvents)
+    
+# a little bit of sample code, so I don't forget what I meant for this to do:
 if __name__ == "__main__":
+  
+  print "Mealy"
+  # Mealy process test
   partitionFunction = "return 3"
   outputFunction = "return [(x[0] + x[2] + w)]"
   nextStateFunction = "return x[1]"
   initialState = 0
   
-  process = MealyProcess(partitionFunction, outputFunction, nextStateFunction, initialState)
+  inputSignal = range(9)
+  outputSignal = []
+  
+  process = MealyProcess(partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
   process.runOneStep()
   process.runOneStep()
   process.runOneStep()
+  
+  print "InputSignal:", inputSignal
+  print "OutputSignal:", outputSignal
+  
+  # Zip process test
+  print "Zip"
+  
+  inputSignal1 = range(9)
+  inputSignal2 = range(10,19)
+  outputSignal = []
+  process = ZipProcess(2, 4, inputSignal1, inputSignal2, outputSignal)
+  process.runOneStep()
+  process.runOneStep()
+  
+  print "InputSignal1:", inputSignal1
+  print "InputSignal2:", inputSignal2
+  print "OutputSignal:", outputSignal
