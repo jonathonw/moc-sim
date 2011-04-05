@@ -38,7 +38,7 @@ class MealyProcess:
       inputEvents.append(self._inputSignal.pop(0))
     outputEvents = self._outputFunction(self._state, inputEvents)
     self._state = self._nextStateFunction(self._state, inputEvents)
-    self._outputSignal.append(outputEvents)
+    self._outputSignal.extend(outputEvents)
     
 class ZipProcess:
   def __init__(self, signal1Count, signal2Count, inputSignal1, inputSignal2, outputSignal):
@@ -57,6 +57,17 @@ class ZipProcess:
       signal2Events.append(self._inputSignal2.pop(0))
     outputEvents = (signal1Events, signal2Events)
     self._outputSignal.append(outputEvents)
+    
+class UnzipProcess:
+  def __init__(self, inputSignal, outputSignal1, outputSignal2):
+    self._inputSignal = inputSignal
+    self._outputSignal1 = outputSignal1
+    self._outputSignal2 = outputSignal2
+    
+  def runOneStep(self):
+    (signal1Events, signal2Events) = self._inputSignal.pop(0)
+    self._outputSignal1.extend(signal1Events)
+    self._outputSignal2.extend(signal2Events)
     
 # a little bit of sample code, so I don't forget what I meant for this to do:
 if __name__ == "__main__":
@@ -92,3 +103,15 @@ if __name__ == "__main__":
   print "InputSignal1:", inputSignal1
   print "InputSignal2:", inputSignal2
   print "OutputSignal:", outputSignal
+  
+  print "Unzip"
+  inputSignal = outputSignal
+  outputSignal1 = []
+  outputSignal2 = []
+  
+  process = UnzipProcess(inputSignal, outputSignal1, outputSignal2)
+  process.runOneStep()
+  process.runOneStep()
+  print "InputSignal:", inputSignal
+  print "OutputSignal1:", outputSignal1
+  print "OutputSignal2:", outputSignal2
