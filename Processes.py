@@ -3,7 +3,7 @@ import utilities
 
 class MealyProcess:
   '''A generic Mealy process.'''
-  def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState):
+  def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
     '''
     Instantiates a Mealy state machine with a partition function (lambda), 
     output function (f), next state function (g), and initial state (w_0).
@@ -22,6 +22,8 @@ class MealyProcess:
     self._outputFunction = utilities.stringToFunction(outputFunction, "w, x")
     self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w, x")
     self._state = initialState
+    self._inputSignal = inputSignal
+    self._outputSignal = outputSignal
     
   def runOneStep(self):
     '''
@@ -31,11 +33,12 @@ class MealyProcess:
     '''
     
     inputPartitionSize = self._partitionFunction(self._state)
-    inputEvents = range(inputPartitionSize) #TODO:  get real data (this just gets a list of the right length)
+    inputEvents = []
+    for i in range(inputPartitionSize)
+      inputEvents.append(self._inputSignal.pop(0))
     outputEvents = self._outputFunction(self._state, inputEvents)
     self._state = self._nextStateFunction(self._state, inputEvents)
-    #TODO: figure out what to do with the output (return it?  Append it somewhere?)
-    print outputEvents
+    self._outputSignal.append(self._outputEvents)
     
 #a little bit of sample code, so I don't forget what I meant for this to do:
 if __name__ == "__main__":
