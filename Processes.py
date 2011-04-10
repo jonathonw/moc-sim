@@ -68,10 +68,16 @@ class UnzipProcess:
     (signal1Events, signal2Events) = self._inputSignal.pop(0)
     self._outputSignal1.extend(signal1Events)
     self._outputSignal2.extend(signal2Events)
+
+class SourceProcess:
+  '''
+  TODO: implement this - MealyProcess needs an input signal to
+  function and has no way of modifying the input signal.
+  '''
+  pass
     
 # a little bit of sample code, so I don't forget what I meant for this to do:
-if __name__ == "__main__":
-  
+if __name__ == "__main__":  
   print "Mealy"
   # Mealy process test
   partitionFunction = "return 3"
