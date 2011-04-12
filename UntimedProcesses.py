@@ -20,7 +20,7 @@ class ZipU(Processes.ZipProcess):
     Processes.ZipProcess.__init__(self, signal1Count, signal2Count, inputSignal1, inputSignal2, outputSignal)
 
   def runOneStep(self):
-      Processes.ZipProcess.runOneStep(self)
+    Processes.ZipProcess.runOneStep(self)
 
 class UnzipU(Processes.UnzipProcess):
   ''' Untimed Unzip process - same as generic Unzip '''
@@ -28,7 +28,7 @@ class UnzipU(Processes.UnzipProcess):
     Processes.UnzipProcess.__init__(self, inputSignal, outputSignal1, outputSignal2)
 
   def runOneStep(self):
-      Processes.UnzipProcess.runOneStep(self)
+    Processes.UnzipProcess.runOneStep(self)
 
 class MapU(MealyU):
   ''' Untimed Map process - basically a simplified Untimed Mealy process '''
@@ -47,7 +47,10 @@ class MapU(MealyU):
     The untimed Map process is stateless, so we just pass a dummy function and
     initial state to the generic mealy process.
     '''
-    MealyU.__init__(self, "return %d" % partitionConstant, outputFunction, "return 0", 0, inputSignal, outputSignal)
+    partitionFunction = "return %s" % str(partitionConstant)
+    nextStateFunction = "return 0"
+    initialState = 0
+    MealyU.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
   def runOneStep(self):
     ''' same as generic Mealy's runOneStep '''
@@ -69,7 +72,8 @@ class ScanU(MealyU):
     The next state function and initial sate are simply passed directly to
     the MealyU constructor.
     '''
-    MealyU.__init__(self, partitionFunction, "return w", nextStateFunction, initialState, inputSignal, outputSignal)
+    outputFunction = "return [w]"
+    MealyU.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
   def runOneStep(self):
     ''' same as generic Mealy's runOneStep '''
@@ -124,7 +128,7 @@ if __name__ == "__main__":
   print "ScanU"
   partitionFunction = "return 3"
   nextStateFunction = "return [(x[0] + x[1] + x[2])]"
-  initialState = [0]
+  initialState = 0
   
   inputSignal = range(9)
   outputSignal = []

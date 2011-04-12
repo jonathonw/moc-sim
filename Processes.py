@@ -74,7 +74,25 @@ class SourceProcess:
   TODO: implement this - MealyProcess needs an input signal to
   function and has no way of modifying the input signal.
   '''
-  pass
+  def __init__(self, nextStateFunction, initialState, outputSignal):
+    self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w")
+    self._state = initialState
+    self._outputSignal = outputSignal
+
+  def runOneStep(self):
+    self._outputSignal.append(self._state)
+    self._state = self._nextStateFunction(self._state)
+
+class InitProcess(MealyProcess):
+  def __init__(self, initialValue, inputSignal, outputSignal):
+    partitionFunction = "return 1"
+    outputFunction = "if w == True:\n\
+  return [%s]\n\
+else:\n\
+  return [x[0]]" % str(initialValue)
+    nextState = "return False"
+    initialState = True
+    MealyProcess.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
     
 # a little bit of sample code, so I don't forget what I meant for this to do:
 if __name__ == "__main__":  
@@ -121,3 +139,31 @@ if __name__ == "__main__":
   print "InputSignal:", inputSignal
   print "OutputSignal1:", outputSignal1
   print "OutputSignal2:", outputSignal2
+
+  # Source process test
+  print "Source"
+  
+  initialState = 1
+  nextStateFunction = "return w + 1"
+  outputSignal = []
+
+  process = SourceProcess(nextStateFunction, initialState, outputSignal)
+  process.runOneStep()
+  process.runOneStep()
+  process.runOneStep()
+  process.runOneStep()
+  print "OutputSignal:", outputSignal
+
+  # Init process test
+  print "Init"
+
+  initialValue = 17
+  inputSignal = range(4)
+  outputSignal = []
+
+  process = InitProcess(initialValue, inputSignal, outputSignal)
+  process.runOneStep()
+  process.runOneStep()
+  process.runOneStep()
+  process.runOneStep()
+  print "OutputSignal:", outputSignal
