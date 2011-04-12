@@ -8,27 +8,15 @@ generic counterparts; others are simplified versions.
 
 class MealyU(Processes.MealyProcess):
   ''' Untimed Mealy process - same as generic Mealy '''
-  def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
-    Processes.MealyProcess.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
+  pass
 
-  def runOneStep(self):
-    Processes.MealyProcess.runOneStep(self)
-  
 class ZipU(Processes.ZipProcess):
   ''' Untimed Zip process - same as generic Zip '''
-  def __init__(self, signal1Count, signal2Count, inputSignal1, inputSignal2, outputSignal):
-    Processes.ZipProcess.__init__(self, signal1Count, signal2Count, inputSignal1, inputSignal2, outputSignal)
-
-  def runOneStep(self):
-    Processes.ZipProcess.runOneStep(self)
+  pass
 
 class UnzipU(Processes.UnzipProcess):
   ''' Untimed Unzip process - same as generic Unzip '''
-  def __init__(self, inputSignal, outputSignal1, outputSignal2):
-    Processes.UnzipProcess.__init__(self, inputSignal, outputSignal1, outputSignal2)
-
-  def runOneStep(self):
-    Processes.UnzipProcess.runOneStep(self)
+  pass
 
 class MapU(MealyU):
   ''' Untimed Map process - basically a simplified Untimed Mealy process '''
@@ -52,10 +40,6 @@ class MapU(MealyU):
     initialState = 0
     MealyU.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
-  def runOneStep(self):
-    ''' same as generic Mealy's runOneStep '''
-    MealyU.runOneStep(self)
-
 class ScanU(MealyU):
   def __init__(self, partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal):
     '''
@@ -75,11 +59,6 @@ class ScanU(MealyU):
     outputFunction = "return [w]"
     MealyU.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
-  def runOneStep(self):
-    ''' same as generic Mealy's runOneStep '''
-    MealyU.runOneStep(self)
-
-
 class ScandU(MealyU):
   '''
   Instantiates a ScanU process with an input partition function (gamma),
@@ -87,9 +66,13 @@ class ScandU(MealyU):
 
   This is exactly the same as ScanU, except that the process outputs
   its initial state before receiving/handling any input.
-  TODO: figure out how to do this!
   '''
-  pass
+  def __init__(self, partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal):
+    outputFunction = "if w == True:\n\
+  return [%s]\n\
+else:\n\
+  return [x[0]]" % str(initialValue)
+    nextState = "return False"
 
 class SourceU(MealyU):
   '''
