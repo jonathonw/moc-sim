@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 import utilities
 
-class MealyProcess:
+class Process:
+  pass
+
+class MealyProcess(Process):
   '''A generic Mealy process.'''
   def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
     '''
@@ -40,7 +43,7 @@ class MealyProcess:
     self._state = self._nextStateFunction(self._state, inputEvents)
     self._outputSignal.extend(outputEvents)
     
-class ZipProcess:
+class ZipProcess(Process):
   def __init__(self, signal1Count, signal2Count, inputSignal1, inputSignal2, outputSignal):
     self._signal1Count = signal1Count
     self._signal2Count = signal2Count
@@ -58,7 +61,7 @@ class ZipProcess:
     outputEvents = (signal1Events, signal2Events)
     self._outputSignal.append(outputEvents)
     
-class UnzipProcess:
+class UnzipProcess(Process):
   def __init__(self, inputSignal, outputSignal1, outputSignal2):
     self._inputSignal = inputSignal
     self._outputSignal1 = outputSignal1
@@ -69,7 +72,7 @@ class UnzipProcess:
     self._outputSignal1.extend(signal1Events)
     self._outputSignal2.extend(signal2Events)
 
-class SourceProcess:
+class SourceProcess(Process):
   '''
   TODO: implement this - MealyProcess needs an input signal to
   function and has no way of modifying the input signal.
