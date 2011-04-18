@@ -20,8 +20,16 @@ class Scheduler:
     pass
   
   def runOneStep(self):
-    for p in self._processes:
-      #need to catch an out of range exception (or something like that) to determine
-      #when something doesn't have enough input
-      p.runOneStep()
+    unrunProcesses = processes[:]
+    previousCount = 0
+    while len(unrunProcesses) > 0:
+      previousCount = len(unrunProcesses)
+      for process in unrunProcesses:
+        if process.preFire():
+          process.fire
+          unrunProcesses.remove(process)
+      if previousCount == len(unrunProcesses):
+        print "Can't reconcile process loop"
+          
+    
       

@@ -124,14 +124,17 @@ class SourceProcess(Process):
 
 class InitProcess(MealyProcess):
   def __init__(self, initialValue, inputSignal, outputSignal):
-    partitionFunction = "return 1"
+    partitionFunction = "if w == False:\n\
+  return 1\n\
+else:\n\
+  return 0"
     outputFunction = "if w == True:\n\
   return [%s]\n\
 else:\n\
   return [x[0]]" % str(initialValue)
     nextState = "return False"
     initialState = True
-    MealyProcess.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
+    MealyProcess.__init__(self, partitionFunction, outputFunction, nextState, initialState, inputSignal, outputSignal)
     
 # a little bit of sample code, so I don't forget what I meant for this to do:
 if __name__ == "__main__":  
