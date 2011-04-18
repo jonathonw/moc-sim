@@ -36,6 +36,4 @@ class Scheduler:
         
     for process in self._processes:
       process.postFire()
-          
-    
       
