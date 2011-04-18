@@ -27,8 +27,16 @@ class MealyProcess(Process):
     self._state = initialState
     self._inputSignal = inputSignal
     self._outputSignal = outputSignal
+    self._nextState = initialState
     
-  def runOneStep(self):
+  def preFire(self):
+    inputPartitionSize = self._partitionFunction(self._state)
+    if len(self._inputSignal) >= inputPartitionSize:
+      return True
+    else:
+      return False
+    
+  def fire(self):
     '''
     Runs this Mealy process for one step.
     
@@ -40,8 +48,11 @@ class MealyProcess(Process):
     for i in range(inputPartitionSize):
       inputEvents.append(self._inputSignal.pop(0))
     outputEvents = self._outputFunction(self._state, inputEvents)
-    self._state = self._nextStateFunction(self._state, inputEvents)
+    self._nextState = self._nextStateFunction(self._state, inputEvents)
     self._outputSignal.extend(outputEvents)
+    
+  def postFire(self):
+    self._state = self._nextState
     
 class ZipProcess(Process):
   def __init__(self, signal1Count, signal2Count, inputSignal1, inputSignal2, outputSignal):
@@ -51,7 +62,13 @@ class ZipProcess(Process):
     self._inputSignal2 = inputSignal2
     self._outputSignal = outputSignal
     
-  def runOneStep(self):
+  def preFire(self):
+    if (len(inputSignal1) >= self._signal1Count) and (len(inputSignal2) >= self._signal2Count):
+      return True
+    else:
+      return False
+    
+  def fire(self):
     signal1Events = []
     for i in range(self._signal1Count):
       signal1Events.append(self._inputSignal1.pop(0))
@@ -60,6 +77,9 @@ class ZipProcess(Process):
       signal2Events.append(self._inputSignal2.pop(0))
     outputEvents = (signal1Events, signal2Events)
     self._outputSignal.append(outputEvents)
+  
+  def postFire(self):
+    pass
     
 class UnzipProcess(Process):
   def __init__(self, inputSignal, outputSignal1, outputSignal2):
@@ -67,10 +87,19 @@ class UnzipProcess(Process):
     self._outputSignal1 = outputSignal1
     self._outputSignal2 = outputSignal2
     
-  def runOneStep(self):
+  def preFire(self):
+    if len(inputSignal) >= 1:
+      return True
+    else:
+      return False
+    
+  def fire(self):
     (signal1Events, signal2Events) = self._inputSignal.pop(0)
     self._outputSignal1.extend(signal1Events)
     self._outputSignal2.extend(signal2Events)
+    
+  def postFire(self):
+    pass
 
 class SourceProcess(Process):
   '''
@@ -81,10 +110,17 @@ class SourceProcess(Process):
     self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w")
     self._state = initialState
     self._outputSignal = outputSignal
+    self._nextState = initialState
+    
+  def preFire(self):
+    return True
 
-  def runOneStep(self):
+  def fire(self):
     self._outputSignal.append(self._state)
-    self._state = self._nextStateFunction(self._state)
+    self._nextState = self._nextStateFunction(self._state)
+    
+  def postFire(self):
+    self._state = self._nextState
 
 class InitProcess(MealyProcess):
   def __init__(self, initialValue, inputSignal, outputSignal):
@@ -99,6 +135,13 @@ else:\n\
     
 # a little bit of sample code, so I don't forget what I meant for this to do:
 if __name__ == "__main__":  
+  def fireProcess(process):
+    if process.preFire():
+      process.fire()
+      process.postFire()
+    else:
+      print "Precondition not met"
+  
   print "Mealy"
   # Mealy process test
   partitionFunction = "return 3"
@@ -110,9 +153,9 @@ if __name__ == "__main__":
   outputSignal = []
   
   process = MealyProcess(partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
   
   print "InputSignal:", inputSignal
   print "OutputSignal:", outputSignal
@@ -124,8 +167,8 @@ if __name__ == "__main__":
   inputSignal2 = range(10,19)
   outputSignal = []
   process = ZipProcess(2, 4, inputSignal1, inputSignal2, outputSignal)
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
   
   print "InputSignal1:", inputSignal1
   print "InputSignal2:", inputSignal2
@@ -137,8 +180,8 @@ if __name__ == "__main__":
   outputSignal2 = []
   
   process = UnzipProcess(inputSignal, outputSignal1, outputSignal2)
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
   print "InputSignal:", inputSignal
   print "OutputSignal1:", outputSignal1
   print "OutputSignal2:", outputSignal2
@@ -151,10 +194,10 @@ if __name__ == "__main__":
   outputSignal = []
 
   process = SourceProcess(nextStateFunction, initialState, outputSignal)
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal
 
   # Init process test
@@ -165,8 +208,8 @@ if __name__ == "__main__":
   outputSignal = []
 
   process = InitProcess(initialValue, inputSignal, outputSignal)
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal

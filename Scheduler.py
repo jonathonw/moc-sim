@@ -6,15 +6,15 @@ from Processes import Process
 
 class Scheduler:
   '''
-  Scheduler for processes.  By the time the process graph reaches here, we
-  should have a directed acyclic graph of processes (feedback loops should
-  already be resolved).  Processes is the list of processes (in any arbitrary
-  order; it'll be sorted by us); processDependencies is a list of pairs
-  expressing dependencies between processes (the output of the first process
-  is connected to the input of the second process).
+  Scheduler for processes.  Processes is the list of processes, inputSignals is a
+  list of input signals from the CSV file (so, a list of lists), and outputSignals
+  is a list of output signals that aren't connected to another process (so, our
+  final output).
   '''
-  def __init__(self, processes, processDependencies, inputSignals, outputSignals):
-    self._processes = utilities.topological_sort(processes, processDependencies)
+  def __init__(self, processes, inputSignals, outputSignals):
+    self._processes = processes
+    self._inputSignals = inputSignals
+    self._outputSignals = outputSignals
   
   def runModel(self):
     pass
