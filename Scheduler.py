@@ -3,6 +3,8 @@
 import utilities
 from Processes import Process
 
+class CausalityException(Exception):
+  pass
 
 class Scheduler:
   '''
@@ -20,7 +22,7 @@ class Scheduler:
     pass
   
   def runOneStep(self):
-    unrunProcesses = processes[:]
+    unrunProcesses = self._processes[:]
     previousCount = 0
     while len(unrunProcesses) > 0:
       previousCount = len(unrunProcesses)
@@ -30,6 +32,10 @@ class Scheduler:
           unrunProcesses.remove(process)
       if previousCount == len(unrunProcesses):
         print "Can't reconcile process loop"
+        raise CausalityException("Infinite loop")
+        
+    for process in self._processes:
+      process.postFire()
           
     
       
