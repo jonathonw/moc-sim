@@ -50,8 +50,7 @@ class ScanU(MealyU):
     constructor.
 
     The output of ScanU is just the current state, so its output function
-    is "return w".
-    NOTE: SOMETIMES WE ASSUME STATE IS A NUMBER, SOMETIMES AN EVENT - WHICH IS IT??
+    is "return [w]".
 
     The next state function and initial sate are simply passed directly to
     the MealyU constructor.
