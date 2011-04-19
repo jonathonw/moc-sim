@@ -93,10 +93,14 @@ class SinkS(MealyS):
 class InitS(MealyS):
   pass
 
+def fireProcess(process):
+  if process.preFire():
+    process.fire()
+    process.postFire()
+  else:
+    print "Precondition not met"
 
-# Sample code
-if __name__ == "__main__":
-  
+def main():
   # MapS process test
   print "MapS"
   outputFunction = "return [(x[0]+2)]"
@@ -107,9 +111,9 @@ if __name__ == "__main__":
   process = MapS(outputFunction, inputSignal, outputSignal)
 
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal
 
   # ScanS process test
@@ -123,9 +127,9 @@ if __name__ == "__main__":
   process = ScanS(nextStateFunction, initialState, inputSignal, outputSignal)
 
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal
   
   # MealyS process test
@@ -139,9 +143,9 @@ if __name__ == "__main__":
   
   process = MealyS(outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
 
   print "OutputSignal:", outputSignal
   
@@ -155,8 +159,8 @@ if __name__ == "__main__":
   process = ZipS(inputSignal1, inputSignal2, outputSignal)
   print "InputSignal1:", inputSignal1
   print "InputSignal2:", inputSignal2
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal
 
   # UnzipS process test
@@ -167,7 +171,13 @@ if __name__ == "__main__":
   
   process = UnzipS(inputSignal, outputSignal1, outputSignal2)
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal1:", outputSignal1
   print "OutputSignal2:", outputSignal2
+
+
+# Sample code
+if __name__ == "__main__":
+  main()
+
