@@ -9,28 +9,22 @@ Synchronous processes
 class MealyS(Processes.MealyProcess):
   ''' Synchronous Mealy process - same as generic Mealy but with partition function of 1'''
   def __init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
-    Processes.MealyProcess.__init__(self, "return 1", outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
-
-  def runOneStep(self):
-    Processes.MealyProcess.runOneStep(self)
-  
+    partitionFunction = "return 1"
+    Processes.MealyProcess.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
+    
 class ZipS(Processes.ZipProcess):
-  ''' Synchronous Zip process - same as generic Zip
-      but with input partition functions of 1
+  '''
+  Synchronous Zip process - same as generic Zip
+  but with input partition functions of 1
   '''
   def __init__(self, inputSignal1, inputSignal2, outputSignal):
-    Processes.ZipProcess.__init__(self, 1, 1, inputSignal1, inputSignal2, outputSignal)
-
-  def runOneStep(self):
-      Processes.ZipProcess.runOneStep(self)
+    signal1Count = 1
+    signal2Count = 1
+    Processes.ZipProcess.__init__(self, signal1Count, signal1Count, inputSignal1, inputSignal2, outputSignal)
 
 class UnzipS(Processes.UnzipProcess):
   ''' Synchronous Unzip process - same as generic Unzip '''
-  def __init__(self, inputSignal, outputSignal1, outputSignal2):
-    Processes.UnzipProcess.__init__(self, inputSignal, outputSignal1, outputSignal2)
-
-  def runOneStep(self):
-      Processes.UnzipProcess.runOneStep(self)
+  pass
 
 class MapS(MealyS):
   ''' Synchronous Map process - basically a simplified Synchronous Mealy process '''
@@ -45,58 +39,60 @@ class MapS(MealyS):
     The Synchronous Map process is stateless, so we just pass a dummy function and
     initial state to the generic mealy process.
     '''
-    MealyS.__init__(self, outputFunction, "return 0", 0, inputSignal, outputSignal)
-
-  def runOneStep(self):
-    ''' same as generic Mealy's runOneStep '''
-    MealyS.runOneStep(self)
+    nextStateFunction = "return 0"
+    initialState = 0
+    MealyS.__init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
 class ScanS(MealyS):
   def __init__(self, nextStateFunction, initialState, inputSignal, outputSignal):
     '''
-    Instantiates a ScanU process with a next state function (g) and an initial state (w_0).
+    Instantiates a ScanS process with a next state function (g) and an initial state (w_0).
 
-    The output of ScanU is just the current state, so its output function
+    The output of ScanS is just the current state, so its output function
     is "return w".
 
     The next state function and initial sate are simply passed directly to
-    the MealyU constructor.
+    the MealyS constructor.
     '''
-    MealyS.__init__(self, "return w", nextStateFunction, initialState, inputSignal, outputSignal)
-
-  def runOneStep(self):
-    ''' same as generic Mealy's runOneStep '''
-    MealyS.runOneStep(self)
-
+    outputFunction = "return [w]"
+    MealyS.__init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
 class ScandS(MealyS):
   '''
-  Instantiates a ScanU process with an input partition function (gamma),
+  Instantiates a ScanS process with an input partition function (gamma),
   a next state function (g), and an initial state (w_0).
 
-  This is exactly the same as ScanU, except that the process outputs
+  This is exactly the same as ScanS, except that the process outputs
   its initial state before receiving/handling any input.
-  TODO: figure out how to do this!
+  '''
+  partitionFunction = "return 1"
+  def __init__(self, partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal):
+    outputFunction = "if w == True:\n\
+  return [%s]\n\
+else:\n\
+  return [x[0]]" % str(initialValue)
+    nextState = "return False"
+
+class SourceS(Processes.SourceProcess):
+  '''
+  Synchronous Source process - same as generic Source process.
   '''
   pass
 
-class SourceS(MealyS):
+class InitS(Processes.InitProcess):
   '''
-  Need new base class - right now, base Mealy needs an input signal to
-  function and has no way of modifying the input signal.
+  Synchronous Init process - same as generic Source process.
   '''
   pass
 
-class SinkS(MealyS):
-  pass
+def fireProcess(process):
+  if process.preFire():
+    process.fire()
+    process.postFire()
+  else:
+    print "Precondition not met"
 
-class InitS(MealyS):
-  pass
-
-
-# Sample code
-if __name__ == "__main__":
-  
+def main():
   # MapS process test
   print "MapS"
   outputFunction = "return [(x[0]+2)]"
@@ -107,9 +103,9 @@ if __name__ == "__main__":
   process = MapS(outputFunction, inputSignal, outputSignal)
 
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal
 
   # ScanS process test
@@ -123,9 +119,9 @@ if __name__ == "__main__":
   process = ScanS(nextStateFunction, initialState, inputSignal, outputSignal)
 
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal
   
   # MealyS process test
@@ -139,9 +135,9 @@ if __name__ == "__main__":
   
   process = MealyS(outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
 
   print "OutputSignal:", outputSignal
   
@@ -155,8 +151,8 @@ if __name__ == "__main__":
   process = ZipS(inputSignal1, inputSignal2, outputSignal)
   print "InputSignal1:", inputSignal1
   print "InputSignal2:", inputSignal2
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal
 
   # UnzipS process test
@@ -167,7 +163,40 @@ if __name__ == "__main__":
   
   process = UnzipS(inputSignal, outputSignal1, outputSignal2)
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal1:", outputSignal1
   print "OutputSignal2:", outputSignal2
+
+  # Source process test
+  print "Source"
+  
+  initialState = 1
+  nextStateFunction = "return w + 1"
+  outputSignal = []
+
+  process = SourceS(nextStateFunction, initialState, outputSignal)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  print "OutputSignal:", outputSignal
+
+  # Init process test
+  print "Init"
+
+  initialValue = 17
+  inputSignal = range(4)
+  outputSignal = []
+
+  process = InitS(initialValue, inputSignal, outputSignal)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  print "OutputSignal:", outputSignal
+
+# Sample code
+if __name__ == "__main__":
+  main()
+
