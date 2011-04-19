@@ -50,8 +50,7 @@ class ScanU(MealyU):
     constructor.
 
     The output of ScanU is just the current state, so its output function
-    is "return w".
-    NOTE: SOMETIMES WE ASSUME STATE IS A NUMBER, SOMETIMES AN EVENT - WHICH IS IT??
+    is "return [w]".
 
     The next state function and initial sate are simply passed directly to
     the MealyU constructor.
@@ -74,23 +73,26 @@ else:\n\
   return [x[0]]" % str(initialValue)
     nextState = "return False"
 
-class SourceU(MealyU):
+class SourceU(Processes.SourceProcess):
   '''
-  Need new base class - right now, base Mealy needs an input signal to
-  function and has no way of modifying the input signal.
+	Untimed Source process - same as generic Source process.
   '''
   pass
 
-class SinkU(MealyU):
+class InitU(Processes.InitProcess):
+  '''
+	Untimed InitU process - same as generic Source process.
+  '''
   pass
 
-class InitU(MealyU):
-  pass
+def fireProcess(process):
+  if process.preFire():
+    process.fire()
+    process.postFire()
+  else:
+    print "Precondition not met"
 
-
-# Sample code
-if __name__ == "__main__":
-  
+def main():
   # MapU process test
   print "MapU"
   partitionConstant = 3
@@ -102,9 +104,9 @@ if __name__ == "__main__":
   process = MapU(partitionConstant, outputFunction, inputSignal, outputSignal)
 
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal
 
   # ScanU process test
@@ -119,9 +121,9 @@ if __name__ == "__main__":
   process = ScanU(partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal
   
   # MealyU process test
@@ -136,9 +138,9 @@ if __name__ == "__main__":
   
   process = MealyU(partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
 
   print "OutputSignal:", outputSignal
   
@@ -152,8 +154,8 @@ if __name__ == "__main__":
   process = ZipU(2, 4, inputSignal1, inputSignal2, outputSignal)
   print "InputSignal1:", inputSignal1
   print "InputSignal2:", inputSignal2
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal
 
   # UnzipU process test
@@ -164,7 +166,42 @@ if __name__ == "__main__":
   
   process = UnzipU(inputSignal, outputSignal1, outputSignal2)
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal1:", outputSignal1
   print "OutputSignal2:", outputSignal2
+	
+	 # Source process test
+  print "Source"
+  
+  initialState = 1
+  nextStateFunction = "return w + 1"
+  outputSignal = []
+
+  process = SourceU(nextStateFunction, initialState, outputSignal)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  print "OutputSignal:", outputSignal
+
+  # Init process test
+  print "Init"
+
+  initialValue = 17
+  inputSignal = range(4)
+  outputSignal = []
+
+  process = InitU(initialValue, inputSignal, outputSignal)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  print "OutputSignal:", outputSignal
+
+# Sample code
+if __name__ == "__main__":
+  main()
+
+  
+  

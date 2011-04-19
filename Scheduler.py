@@ -3,25 +3,37 @@
 import utilities
 from Processes import Process
 
+class CausalityException(Exception):
+  pass
 
 class Scheduler:
   '''
-  Scheduler for processes.  By the time the process graph reaches here, we
-  should have a directed acyclic graph of processes (feedback loops should
-  already be resolved).  Processes is the list of processes (in any arbitrary
-  order; it'll be sorted by us); processDependencies is a list of pairs
-  expressing dependencies between processes (the output of the first process
-  is connected to the input of the second process).
+  Scheduler for processes.  Processes is the list of processes, inputSignals is a
+  list of input signals from the CSV file (so, a list of lists), and outputSignals
+  is a list of output signals that aren't connected to another process (so, our
+  final output).
   '''
-  def __init__(self, processes, processDependencies, inputSignals, outputSignals):
-    self._processes = utilities.topological_sort(processes, processDependencies)
+  def __init__(self, processes, inputSignals, outputSignals):
+    self._processes = processes
+    self._inputSignals = inputSignals
+    self._outputSignals = outputSignals
   
   def runModel(self):
     pass
   
   def runOneStep(self):
-    for p in self._processes:
-      #need to catch an out of range exception (or something like that) to determine
-      #when something doesn't have enough input
-      p.runOneStep()
+    unrunProcesses = self._processes[:]
+    previousCount = 0
+    while len(unrunProcesses) > 0:
+      previousCount = len(unrunProcesses)
+      for process in unrunProcesses:
+        if process.preFire():
+          process.fire
+          unrunProcesses.remove(process)
+      if previousCount == len(unrunProcesses):
+        print "Can't reconcile process loop"
+        raise CausalityException("Infinite loop")
+        
+    for process in self._processes:
+      process.postFire()
       
