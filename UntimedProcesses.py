@@ -74,17 +74,16 @@ else:\n\
   return [x[0]]" % str(initialValue)
     nextState = "return False"
 
-class SourceU(MealyU):
+class SourceU(Processes.SourceProcess):
   '''
-  Need new base class - right now, base Mealy needs an input signal to
-  function and has no way of modifying the input signal.
+	Untimed Source process - same as generic Source process.
   '''
   pass
 
-class SinkU(MealyU):
-  pass
-
-class InitU(MealyU):
+class InitU(Processes.InitProcess):
+  '''
+	Untimed InitU process - same as generic Source process.
+  '''
   pass
 
 def fireProcess(process):
@@ -172,6 +171,34 @@ def main():
   fireProcess(process)
   print "OutputSignal1:", outputSignal1
   print "OutputSignal2:", outputSignal2
+	
+	 # Source process test
+  print "Source"
+  
+  initialState = 1
+  nextStateFunction = "return w + 1"
+  outputSignal = []
+
+  process = SourceU(nextStateFunction, initialState, outputSignal)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  print "OutputSignal:", outputSignal
+
+  # Init process test
+  print "Init"
+
+  initialValue = 17
+  inputSignal = range(4)
+  outputSignal = []
+
+  process = InitU(initialValue, inputSignal, outputSignal)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  print "OutputSignal:", outputSignal
 
 # Sample code
 if __name__ == "__main__":
