@@ -10,9 +10,6 @@ class MealyS(Processes.MealyProcess):
   ''' Synchronous Mealy process - same as generic Mealy but with partition function of 1'''
   def __init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
     Processes.MealyProcess.__init__(self, "return 1", outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
-
-  def runOneStep(self):
-    Processes.MealyProcess.runOneStep(self)
   
 class ZipS(Processes.ZipProcess):
   ''' Synchronous Zip process - same as generic Zip
@@ -21,16 +18,10 @@ class ZipS(Processes.ZipProcess):
   def __init__(self, inputSignal1, inputSignal2, outputSignal):
     Processes.ZipProcess.__init__(self, 1, 1, inputSignal1, inputSignal2, outputSignal)
 
-  def runOneStep(self):
-      Processes.ZipProcess.runOneStep(self)
-
 class UnzipS(Processes.UnzipProcess):
   ''' Synchronous Unzip process - same as generic Unzip '''
   def __init__(self, inputSignal, outputSignal1, outputSignal2):
     Processes.UnzipProcess.__init__(self, inputSignal, outputSignal1, outputSignal2)
-
-  def runOneStep(self):
-      Processes.UnzipProcess.runOneStep(self)
 
 class MapS(MealyS):
   ''' Synchronous Map process - basically a simplified Synchronous Mealy process '''
@@ -47,10 +38,6 @@ class MapS(MealyS):
     '''
     MealyS.__init__(self, outputFunction, "return 0", 0, inputSignal, outputSignal)
 
-  def runOneStep(self):
-    ''' same as generic Mealy's runOneStep '''
-    MealyS.runOneStep(self)
-
 class ScanS(MealyS):
   def __init__(self, nextStateFunction, initialState, inputSignal, outputSignal):
     '''
@@ -63,10 +50,6 @@ class ScanS(MealyS):
     the MealyU constructor.
     '''
     MealyS.__init__(self, "return w", nextStateFunction, initialState, inputSignal, outputSignal)
-
-  def runOneStep(self):
-    ''' same as generic Mealy's runOneStep '''
-    MealyS.runOneStep(self)
 
 
 class ScandS(MealyS):
