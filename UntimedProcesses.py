@@ -90,6 +90,13 @@ class InitU(MealyU):
 
 # Sample code
 if __name__ == "__main__":
+
+  def fireProcess(process):
+    if process.preFire():
+      process.fire()
+      process.postFire()
+    else:
+      print "Precondition not met"
   
   # MapU process test
   print "MapU"
@@ -102,9 +109,9 @@ if __name__ == "__main__":
   process = MapU(partitionConstant, outputFunction, inputSignal, outputSignal)
 
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal
 
   # ScanU process test
@@ -119,9 +126,9 @@ if __name__ == "__main__":
   process = ScanU(partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal
   
   # MealyU process test
@@ -136,9 +143,9 @@ if __name__ == "__main__":
   
   process = MealyU(partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
 
   print "OutputSignal:", outputSignal
   
@@ -152,8 +159,8 @@ if __name__ == "__main__":
   process = ZipU(2, 4, inputSignal1, inputSignal2, outputSignal)
   print "InputSignal1:", inputSignal1
   print "InputSignal2:", inputSignal2
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+  fireProcess(process)
   print "OutputSignal:", outputSignal
 
   # UnzipU process test
@@ -164,7 +171,7 @@ if __name__ == "__main__":
   
   process = UnzipU(inputSignal, outputSignal1, outputSignal2)
   print "InputSignal:", inputSignal
-  process.runOneStep()
-  process.runOneStep()
+  fireProcess(process)
+    fireProcess(process)
   print "OutputSignal1:", outputSignal1
   print "OutputSignal2:", outputSignal2
