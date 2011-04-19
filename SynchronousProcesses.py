@@ -7,24 +7,24 @@ Synchronous processes
 '''
 
 class MealyS(Processes.MealyProcess):
-	''' Synchronous Mealy process - same as generic Mealy but with partition function of 1'''
-	def __init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
-		partitionFunction = "return 1"
+  ''' Synchronous Mealy process - same as generic Mealy but with partition function of 1'''
+  def __init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
+    partitionFunction = "return 1"
     Processes.MealyProcess.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
-		
+    
 class ZipS(Processes.ZipProcess):
   '''
-	Synchronous Zip process - same as generic Zip
+  Synchronous Zip process - same as generic Zip
   but with input partition functions of 1
   '''
-	def __init__(self, inputSignal1, inputSignal2, outputSignal):
-		signal1Count = 1
-		signal2Count = 1
+  def __init__(self, inputSignal1, inputSignal2, outputSignal):
+    signal1Count = 1
+    signal2Count = 1
     Processes.ZipProcess.__init__(self, signal1Count, signal1Count, inputSignal1, inputSignal2, outputSignal)
 
 class UnzipS(Processes.UnzipProcess):
   ''' Synchronous Unzip process - same as generic Unzip '''
-	pass
+  pass
 
 class MapS(MealyS):
   ''' Synchronous Map process - basically a simplified Synchronous Mealy process '''
@@ -39,8 +39,8 @@ class MapS(MealyS):
     The Synchronous Map process is stateless, so we just pass a dummy function and
     initial state to the generic mealy process.
     '''
-		nextStateFunction = "return 0"
-		initialState = 0
+    nextStateFunction = "return 0"
+    initialState = 0
     MealyS.__init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
 class ScanS(MealyS):
@@ -54,7 +54,7 @@ class ScanS(MealyS):
     The next state function and initial sate are simply passed directly to
     the MealyS constructor.
     '''
-		outputFunction = "return [w]"
+    outputFunction = "return [w]"
     MealyS.__init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
 class ScandS(MealyS):
@@ -65,7 +65,7 @@ class ScandS(MealyS):
   This is exactly the same as ScanS, except that the process outputs
   its initial state before receiving/handling any input.
   '''
-	partitionFunction = "return 1"
+  partitionFunction = "return 1"
   def __init__(self, partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal):
     outputFunction = "if w == True:\n\
   return [%s]\n\
@@ -75,13 +75,13 @@ else:\n\
 
 class SourceS(Processes.SourceProcess):
   '''
-	Synchronous Source process - same as generic Source process.
+  Synchronous Source process - same as generic Source process.
   '''
   pass
 
 class InitS(Processes.InitProcess):
   '''
-	Synchronous Init process - same as generic Source process.
+  Synchronous Init process - same as generic Source process.
   '''
   pass
 
@@ -168,7 +168,7 @@ def main():
   print "OutputSignal1:", outputSignal1
   print "OutputSignal2:", outputSignal2
 
-	# Source process test
+  # Source process test
   print "Source"
   
   initialState = 1
