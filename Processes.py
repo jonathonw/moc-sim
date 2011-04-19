@@ -63,7 +63,7 @@ class ZipProcess(Process):
     self._outputSignal = outputSignal
     
   def preFire(self):
-    if (len(inputSignal1) >= self._signal1Count) and (len(inputSignal2) >= self._signal2Count):
+    if (len(self._inputSignal1) >= self._signal1Count) and (len(self._inputSignal2) >= self._signal2Count):
       return True
     else:
       return False
@@ -88,7 +88,7 @@ class UnzipProcess(Process):
     self._outputSignal2 = outputSignal2
     
   def preFire(self):
-    if len(inputSignal) >= 1:
+    if len(self._inputSignal) >= 1:
       return True
     else:
       return False

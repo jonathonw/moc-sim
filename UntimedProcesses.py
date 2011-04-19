@@ -172,6 +172,6 @@ if __name__ == "__main__":
   process = UnzipU(inputSignal, outputSignal1, outputSignal2)
   print "InputSignal:", inputSignal
   fireProcess(process)
-    fireProcess(process)
+  fireProcess(process)
   print "OutputSignal1:", outputSignal1
   print "OutputSignal2:", outputSignal2
