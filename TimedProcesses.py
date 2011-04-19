@@ -70,6 +70,34 @@ def main():
   fireProcess(process)
   print "OutputSignal1:", outputSignal1
   print "OutputSignal2:", outputSignal2
+  
+   # Source process test
+  print "Source"
+  
+  initialState = 1
+  nextStateFunction = "return w + 1"
+  outputSignal = []
+
+  process = SourceT(nextStateFunction, initialState, outputSignal)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  print "OutputSignal:", outputSignal
+
+  # Init process test
+  print "Init"
+
+  initialValue = 17
+  inputSignal = range(4)
+  outputSignal = []
+
+  process = InitT(initialValue, inputSignal, outputSignal)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  fireProcess(process)
+  print "OutputSignal:", outputSignal
 
 # Sample code
 if __name__ == "__main__":
