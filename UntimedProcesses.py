@@ -87,17 +87,14 @@ class SinkU(MealyU):
 class InitU(MealyU):
   pass
 
+def fireProcess(process):
+  if process.preFire():
+    process.fire()
+    process.postFire()
+  else:
+    print "Precondition not met"
 
-# Sample code
-if __name__ == "__main__":
-
-  def fireProcess(process):
-    if process.preFire():
-      process.fire()
-      process.postFire()
-    else:
-      print "Precondition not met"
-  
+def main():
   # MapU process test
   print "MapU"
   partitionConstant = 3
@@ -175,3 +172,10 @@ if __name__ == "__main__":
   fireProcess(process)
   print "OutputSignal1:", outputSignal1
   print "OutputSignal2:", outputSignal2
+
+# Sample code
+if __name__ == "__main__":
+  main()
+
+  
+  

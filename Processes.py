@@ -135,16 +135,15 @@ else:\n\
     nextState = "return False"
     initialState = True
     MealyProcess.__init__(self, partitionFunction, outputFunction, nextState, initialState, inputSignal, outputSignal)
-    
-# a little bit of sample code, so I don't forget what I meant for this to do:
-if __name__ == "__main__":  
-  def fireProcess(process):
-    if process.preFire():
-      process.fire()
-      process.postFire()
-    else:
-      print "Precondition not met"
-  
+ 
+def fireProcess(process):
+  if process.preFire():
+    process.fire()
+    process.postFire()
+  else:
+    print "Precondition not met" 
+ 
+def main():
   print "Mealy"
   # Mealy process test
   partitionFunction = "return 3"
@@ -216,3 +215,9 @@ if __name__ == "__main__":
   fireProcess(process)
   fireProcess(process)
   print "OutputSignal:", outputSignal
+    
+# a little bit of sample code, so I don't forget what I meant for this to do:
+if __name__ == "__main__":  
+  main()
+  
+
