@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import Processes
-import UntimedProcesses
 
 '''
 Synchronous processes
@@ -22,7 +21,7 @@ class ZipS(Processes.ZipProcess):
     Processes.ZipProcess.__init__(self, 1, 1, inputSignal1, inputSignal2, outputSignal)
 
   def runOneStep(self):
-      Processes.ZipProcess.runOneStep(self)
+    Processes.ZipProcess.runOneStep(self)
 
 class UnzipS(Processes.UnzipProcess):
   ''' Synchronous Unzip process - same as generic Unzip '''
@@ -30,7 +29,7 @@ class UnzipS(Processes.UnzipProcess):
     Processes.UnzipProcess.__init__(self, inputSignal, outputSignal1, outputSignal2)
 
   def runOneStep(self):
-      Processes.UnzipProcess.runOneStep(self)
+    Processes.UnzipProcess.runOneStep(self)
 
 class MapS(MealyS):
   ''' Synchronous Map process - basically a simplified Synchronous Mealy process '''
@@ -54,13 +53,13 @@ class MapS(MealyS):
 class ScanS(MealyS):
   def __init__(self, nextStateFunction, initialState, inputSignal, outputSignal):
     '''
-    Instantiates a ScanU process with a next state function (g) and an initial state (w_0).
+    Instantiates a ScanS process with a next state function (g) and an initial state (w_0).
 
-    The output of ScanU is just the current state, so its output function
+    The output of ScanS is just the current state, so its output function
     is "return w".
 
     The next state function and initial sate are simply passed directly to
-    the MealyU constructor.
+    the MealyS constructor.
     '''
     MealyS.__init__(self, "return w", nextStateFunction, initialState, inputSignal, outputSignal)
 
