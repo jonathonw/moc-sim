@@ -1,0 +1,83 @@
+<?xml version='1.0' ?>
+<system>
+	<inputs>
+		<input1>
+		</input1>
+		<input2>
+		</input2>	
+	</inputs>
+
+	<outputs>
+		<output1>
+		</output1>
+		<output2>
+		</output2>
+	</outputs>
+
+	<processes>
+		<process1>
+			<MoC>
+				Untimed
+			</MoC>
+			<Type>
+				Zip
+			</Type>
+			<Count1>
+				3
+			</Count1>
+			<Count2>
+				3
+			</Count2>
+			<In1>
+				inputs/input1
+			</In1>
+			<In2>
+				process2/Out1
+			</In2>
+			<Out1>
+			</Out1>
+		</process1>
+		<process2>
+			<MoC>
+				Timed
+			</MoC>
+			<Type>
+				UnZip
+			</Type>
+			<In1>
+				process1/Out1
+			</In1>
+			<Out1>
+			</Out1>
+			<Out2>
+				outputs/output2
+			</Out2>
+		</process2>
+		<process3>
+			<MoC>
+				Synchronous
+			</MoC>
+			<Type>
+				Mealy
+			</Type>
+			<PartFunc>
+				return 1
+			</PartFunc>
+			<OutFunc>
+				return [(x[0] + w)]
+			</OutFunc>
+			<StateFunc>
+				return x[0]
+			</StateFunc>
+			<InitState>
+				1
+			</InitState>
+			<In1>
+				inputs/input2
+			</In1>
+			<Out1>
+				outputs/output1
+			</Out1>
+		</process3>
+	</processes>
+</system>
