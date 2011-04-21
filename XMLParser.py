@@ -1,4 +1,7 @@
 import Processes
+import UntimedProcesses
+import TimedProcesses
+import SynchronousProcesses
 import utilities
 import os
 from xml.etree import ElementTree as ET
@@ -43,7 +46,7 @@ def parseXml(filename):
           for item in obj:
               signal = []
               sig_stack.append(signal)
-              sig_list.append(item.tag)
+              sig_list.append(obj.tag + '/' + item.tag)
               
       else:
           for item in obj:
@@ -55,17 +58,26 @@ def parseXml(filename):
                       _indout = search_signals(sig_list,item[6].text)
                       if _indin1==-1:
                           _sig_in1 = []
+                          sig_stack.append(_sig_in1)
+                          sig_list.append(item[4].text)
+                          _indin1 = search_signals(sig_list,item[4].text)
                       else:
                           _sig_in1 = sig_stack[_indin1]
                       if _indin2==-1:
                           _sig_in2 = []
+                          sig_stack.append(_sig_in2)
+                          sig_list.append(item[5].text)
+                          _indin2 = search_signals(sig_list,item[5].text)
                       else:
                           _sig_in2 = sig_stack[_indin2]
-                      if _intout==-1:
+                      if _indout==-1:
                           _sig_out = []
+                          sig_stack.append(_sig_out)
+                          sig_list.append(item.tag+'/'+item[6].tag)
+                          _indout = search_signals(sig_list,item.tag+'/'+item[6].tag)
                       else:
-                          _sig_out = sig_stack[_inout]
-                      process = ZipT(eval(item[2].text),eval(item[3].text),_sig_in1,_sig_in2,_sig_out)
+                          _sig_out = sig_stack[_indout]
+                      process = TimedProcesses.ZipT(eval(item[2].text),eval(item[3].text),sig_list[_indin1],sig_list[_indin2],sig_list[_indout])
                   if item[1].text=='UnZip':
                       print item[1].text
                   if item[1].text=='Mealy':
@@ -83,6 +95,31 @@ def parseXml(filename):
               if item[0].text=='Untimed':
                   if item[1].text=='Zip':
                       print item[1].text
+                      _indin1 = search_signals(sig_list,item[4].text)
+                      _indin2 = search_signals(sig_list,item[5].text)
+                      _indout = search_signals(sig_list,item[6].text)
+                      if _indin1==-1:
+                          _sig_in1 = []
+                          sig_stack.append(_sig_in1)
+                          sig_list.append(item[4].text)
+                          _indin1 = search_signals(sig_list,item[4].text)
+                      else:
+                          _sig_in1 = sig_stack[_indin1]
+                      if _indin2==-1:
+                          _sig_in2 = []
+                          sig_stack.append(_sig_in2)
+                          sig_list.append(item[5].text)
+                          _indin2 = search_signals(sig_list,item[5].text)
+                      else:
+                          _sig_in2 = sig_stack[_indin2]
+                      if _indout==-1:
+                          _sig_out = []
+                          sig_stack.append(_sig_out)
+                          sig_list.append(item.tag+'/'+item[6].tag)
+                          _indout = search_signals(sig_list,item.tag+'/'+item[6].tag)
+                      else:
+                          _sig_out = sig_stack[_indout]
+                      process = UntimedProcesses.ZipU(eval(item[2].text),eval(item[3].text),sig_list[_indin1],sig_list[_indin2],sig_list[_indout])
                   if item[1].text=='UnZip':
                       print item[1].text
                   if item[1].text=='Mealy':
@@ -104,6 +141,23 @@ def parseXml(filename):
                       print item[1].text
                   if item[1].text=='Mealy':
                       print item[1].text
+                      _indin = search_signals(sig_list,item[5].text)
+                      _indout = search_signals(sig_list,item[6].text)
+                      if _indin==-1:
+                          _sig_in = []
+                          sig_stack.append(_sig_in)
+                          sig_list.append(item[5].text)
+                          _indin = search_signals(sig_list,item[5].text)
+                      else:
+                          _sig_in = sig_stack[_indin1]
+                      if _indout==-1:
+                          _sig_out = []
+                          sig_stack.append(_sig_out)
+                          sig_list.append(item.tag+'/'+item[6].tag)
+                          _indout = search_signals(sig_list,item.tag+'/'+item[6].tag)
+                      else:
+                          _sig_out = sig_stack[_indout]
+                      process = SynchronousProcesses.MealyS(item[2].text,item[3].text,eval(item[4].text),sig_list[_indin],sig_list[_indout])
                   if item[1].text=='Moore':
                       print item[1].text
                   if item[1].text=='Scan':
@@ -123,9 +177,9 @@ def parseXml(filename):
   #everything above this point is code for use in the actual parser
   print sig_list
   print sig_stack
-  function = utilities.stringToFunction(system[2][2][3].text, "w, x")
+  function = utilities.stringToFunction(system[2][2][2].text, "w, x")
   x = [1, 2, 3]
-  y=function(eval(system[2][2][5].text),x)
+  y=function(eval(system[2][2][4].text),x)
   print y
   print x[0]
   print function(1,x)

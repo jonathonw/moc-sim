@@ -60,9 +60,6 @@
 			<Type>
 				Mealy
 			</Type>
-			<PartFunc>
-				return 1
-			</PartFunc>
 			<OutFunc>
 				return [(x[0] + w)]
 			</OutFunc>
