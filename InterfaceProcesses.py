@@ -4,57 +4,120 @@ import Processses
 import UntimedProcesses
 import TimedProcesses
 	
-class Interface(Processes.MealyProcess):
-	  ''' Interface process - same as generic Mealy '''
+'''class Interface(Processes.MealyProcess):
+
   def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
     Processes.MealyProcess.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
   def runOneStep(self):
-    Processes.MealyProcess.runOneStep(self)
+    Processes.MealyProcess.runOneStep(self)'''
 
 	
-class intSup(Interface):  
+class intSup(UntimedProcesses.MapU):  
 	''' 
 	Uprate process for interfaces between two domains of the same MoC
 	intSup(r,f) = mapU(1,f) 
 	'''
   def __init__(self, partitionConstant, outputFunction, inputSignal, outputSignal):
+    UntimedProcesses.MapU.__init__(self, "return 1", outputFunction, inputSignal, outputSignal)
 
-    MealyU.__init__(self, "return %d", outputFunction, "return 0", 0, inputSignal, outputSignal)
-
-  def runOneStep(self):
-    ''' same as generic Mealy's runOneStep '''
-    Interface.runOneStep(self)
-
-
-class intSdown(Interface):  
+class intSdown(UntimedProcesses.MapU):  
 	''' 
 	Downrate process for interfaces between two domains of the same MoC
 	intSup(r,f) = mapU(r,f) 
 	'''
+  pass
+
+class intTup(UntimedProcesses.MapU):
+	''' 
+	Uprate process for interfaces between two domains of the same MoC
+	intSup(r,f) = mapU(1,f) 
+	'''
   def __init__(self, partitionConstant, outputFunction, inputSignal, outputSignal):
-
-    MealyU.__init__(self, "return %d" % partitionConstant, outputFunction, "return 0", 0, inputSignal, outputSignal)
-
-  def runOneStep(self):
-    ''' same as generic Mealy's runOneStep '''
-    Interface.runOneStep(self)
+    UntimedProcesses.MapU.__init__(self, "return 1", outputFunction, inputSignal, outputSignal)
 	
-class StripU2T(MealyU):
-	#def __init__():
-	def runOneStep(self):
-		MealyT.runOneStep(self)
+class intTdown(UntimedProcesses.MapU):
+	''' 
+	Downrate process for interfaces between two domains of the same MoC
+	intSup(r,f) = mapU(r,f) 
+	'''
+  pass
+
+ # connects two MoC domains in the case that they are not a simple multiple of each other
+#class intSups(UntimedProcesses.MealyU):
+  #def __init__(self, partitionConstant, outputFunction, inputSignal, outputSignal):
+  
+  
+  
+  
+  
+  
+  
+  
+
+class StripS2U(Processes.MealyProcess):
+  def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
+
+    self._partitionFunction = utilities.stringToFunction(partitionFunction, "w")
+    self._outputFunction = utilities.stringToFunction(outputFunction, "w, x")
+    self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w, x")
+    self._state = initialState
+    self._inputSignal = inputSignal
+    self._outputSignal = outputSignal
+    self._nextState = initialState
+	
+  def fire(self):
+    '''
+    Removes the time events
+    '''
+    
+    inputPartitionSize = self._partitionFunction(self._state)
+    inputEvents = []
+    for i in range(inputPartitionSize):
+	  singleEvent = self._inputSignal.pop(0)
+      if(singleEvent>0):
+		inputEvents.append(singleEvent))
+    outputEvents = self._outputFunction(self._state, inputEvents)
+    self._nextState = self._nextStateFunction(self._state, inputEvents)
+    self._outputSignal.extend(outputEvents)
+	
+  def postFire(self):
 
 class StripT2S(MealyT):
-	#def __init__():
-	def runOneStep(self):
-		MealyS.runOneStep(self)
+  # still need to figure out
+    
 		
+# removes the time information from a timed process
 class StripT2U(MealyT):
-	#def __init__():
-	def runOneStep(self):
-		MealyU.runOneStep(self)
-		
+
+  def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
+
+    self._partitionFunction = utilities.stringToFunction(partitionFunction, "w")
+    self._outputFunction = utilities.stringToFunction(outputFunction, "w, x")
+    self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w, x")
+    self._state = initialState
+    self._inputSignal = inputSignal
+    self._outputSignal = outputSignal
+    self._nextState = initialState
+	
+  def fire(self):
+    '''
+    Removes the time events
+    '''
+    
+    inputPartitionSize = self._partitionFunction(self._state)
+    inputEvents = []
+    for i in range(inputPartitionSize):
+	  singleEvent = self._inputSignal.pop(0)
+      if(singleEvent>0):
+		inputEvents.append(singleEvent))
+    outputEvents = self._outputFunction(self._state, inputEvents)
+    self._nextState = self._nextStateFunction(self._state, inputEvents)
+    self._outputSignal.extend(outputEvents)
+	
+  def postFire(self):
+
+'''  
 class InsertS2T
 	#def __init__():
 	def runOneStep(self):
@@ -68,4 +131,4 @@ class InsertU2T
 class InsertU2S
 	#def __init__():
 	def runOneStep(self):
-		MealyS.runOneStep(self)
+		MealyS.runOneStep(self)'''
