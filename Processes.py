@@ -63,6 +63,8 @@ class ZipProcess(Process):
     self._outputSignal = outputSignal
     
   def preFire(self):
+    print "S1:", len(self._inputSignal1)
+    print "S2:", len(self._inputSignal2)
     if (len(self._inputSignal1) >= self._signal1Count) and (len(self._inputSignal2) >= self._signal2Count):
       return True
     else:
