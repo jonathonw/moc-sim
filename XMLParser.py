@@ -4,6 +4,7 @@ import TimedProcesses
 import SynchronousProcesses
 import utilities
 import os
+import csv
 from xml.etree import ElementTree as ET
 
 def search_signals(_sigs,_tst):
@@ -16,13 +17,22 @@ def search_signals(_sigs,_tst):
             return _ind
     return -1
 
+def convertType(s):
+    for func in (int, float, eval):
+        try:
+            n = func(s)
+            return n
+        except:
+            pass
+    return s
+
 def parseXml(filename):
   tree = ET.parse(filename)
   system = tree.getroot()
   for obj in system:
       for item in obj:
           for field in item:
-              if field.tag!='StateFunc' or field.tag!='OutFunc' or field.tag!='PartFunc':
+              if field.tag!='StateFunc' and field.tag!='OutFunc' and field.tag!='PartFunc':
                   field.text = field.text.replace('\n','')    # remove all the extra newlines
                   field.text = field.text.replace('\t','')    # remove all the extra tabs
   '''
@@ -36,22 +46,63 @@ def parseXml(filename):
   #      for field in item:
   #          print '\t\t'+field.tag
   #          print '\t\t\t'+field.text
-  
-  sig_list = []       #list of signals for initialization
+
+  inputs = {}
+  outputs = {}
+  signals = {}
   proc_list = []      #list of processes (which will be sent to the scheduler
-  sig_stack = []      #stack to hold created signals, search to see if signal has been initialized
+  sig_stack = []
+  sig_list = []
   
   for obj in system:
-      if obj.tag=='inputs' or obj.tag=='outputs':
+      if obj.tag=='inputs':
           for item in obj:
               signal = []
-              sig_stack.append(signal)
-              sig_list.append(obj.tag + '/' + item.tag)              
+              inputs[obj.tag + '/' + item.tag] = signal
+              temp = item.text
+              temp = temp.replace('\n','')
+              temp = temp.replace('\t','')
+              data = temp.split(',')
+              for val in data:
+                  signal.append(float(val))
+              print signal
+              #print inputs
+              #sig_stack.append(signal)
+              #sig_list.append(obj.tag + '/' + item.tag)
+      elif obj.tag=='outputs':
+          for item in obj:
+              signal = []
+              outputs[obj.tag + '/' + item.tag] = signal
+              #print outputs
+              #sig_stack.append(signal)
+              #sig_list.append(obj.tag + '/' + item.tag)
       else:
           for item in obj:
               if item[0].text=='Timed':
                   if item[1].text=='Zip':
                       print item[1].text
+                      if item[4].text in inputs:
+                          in1 = inputs[item[4].text]
+                      elif item[4].text in signals:
+                          in1 = signals[item[4].text]
+                      else:
+                          in1 = []
+                          signals[item[4].text] = in1
+                      if item[5].text in inputs:
+                          in2 = inputs[item[5].text]
+                      elif item[5].text in signals:
+                          in2 = signals[item[5].text]
+                      else:
+                          in2 = []
+                          signals[item[5].text] = in2
+                      if item[6].text in outputs:
+                          out = outputs[item[6].text]
+                      elif item[6].text in signals:
+                          out = signals[item[6].text]
+                      else:
+                          out = []
+                          signals[item[6].text] = out
+                      '''
                       _indin1 = search_signals(sig_list,item[4].text)
                       _indin2 = search_signals(sig_list,item[5].text)
                       _indout = search_signals(sig_list,item[6].text)
@@ -70,10 +121,34 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[6].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[6].tag)
-                      process = TimedProcesses.ZipT(eval(item[2].text),eval(item[3].text),sig_list[_indin1],sig_list[_indin2],sig_list[_indout])
+                      '''
+                      
+                      process = TimedProcesses.ZipT(eval(item[2].text),eval(item[3].text),in1,in2,out)
                       proc_list.append(process)
                   if item[1].text=='UnZip':
                       print item[1].text
+                      if item[2].text in inputs:
+                          in1 = inputs[item[2].text]
+                      elif item[2].text in signals:
+                          in1 = signals[item[2].text]
+                      else:
+                          in1 = []
+                          signals[item[2].text] = in1
+                      if item[3].text in outputs:
+                          out1 = outputs[item[3].text]
+                      elif item[3].text in signals:
+                          out1 = signals[item[3].text]
+                      else:
+                          out1 = []
+                          signals[item[3].text] = out1
+                      if item[4].text in outputs:
+                          out2 = outputs[item[4].text]
+                      elif item[4].text in signals:
+                          out2 = signals[item[4].text]
+                      else:
+                          out2 = []
+                          signals[item[4].text] = out2
+                      '''
                       _indin = search_signals(sig_list,item[2].text)
                       _indout1 = search_signals(sig_list,item[3].text)
                       _indout2 = search_signals(sig_list,item[4].text)
@@ -92,10 +167,26 @@ def parseXml(filename):
                           sig_stack.append(_sig_out2)
                           sig_list.append(item.tag+'/'+item[4].tag)
                           _indout2 = search_signals(sig_list,item.tag+'/'+item[4].tag)
-                      process = TimedProcesses.UnzipT(sig_list[_indin],sig_list[_indout1],sig_list[_indout2])
+                      '''
+                      process = TimedProcesses.UnzipT(in1,out1,out2)
                       proc_list.append(process)
                   if item[1].text=='Mealy':
                       print item[1].text
+                      if item[6].text in inputs:
+                          in1 = inputs[item[6].text]
+                      elif item[6].text in signals:
+                          in1 = signals[item[6].text]
+                      else:
+                          in1 = []
+                          signals[item[6].text] = in1
+                      if item[7].text in outputs:
+                          out1 = outputs[item[7].text]
+                      elif item[7].text in signals:
+                          out1 = signals[item[7].text]
+                      else:
+                          out1 = []
+                          signals[item[7].text] = out1
+                      '''
                       _indin = search_signals(sig_list,item[6].text)
                       _indout = search_signals(sig_list,item[7].text)
                       if _indin==-1:
@@ -108,20 +199,45 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[7].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[7].tag)
-                      process = TimedProcesses.MealyT(item[2].text,item[3].text,item[4].text,eval(item[5].text),sig_list[_indin],sig_list[_indout])
+                      '''
+                      process = TimedProcesses.MealyT(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
                       proc_list.append(process)
                   if item[1].text=='Source':
                       print item[1].text
+                      if item[4].text in outputs:
+                          out1 = outputs[item[4].text]
+                      elif item[4].text in signals:
+                          out1 = signals[item[4].text]
+                      else:
+                          out1 = []
+                          signals[item[4].text] = out1
+                      '''
                       _indout = search_signals(sig_list,item[4].text)
                       if _indout==-1:
                           _sig_out = []
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[4].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[4].tag)
-                      process = TimedProcesses.SourceT(item[2].text,eval(item[3].text),sig_list[_indout])
+                      '''
+                      process = TimedProcesses.SourceT(item[2].text,eval(item[3].text),out1)
                       proc_list.append(process)
                   if item[1].text=='Init':
                       print item[1].text
+                      if item[3].text in inputs:
+                          in1 = inputs[item[3].text]
+                      elif item[3].text in signals:
+                          in1 = signals[item[3].text]
+                      else:
+                          in1 = []
+                          signals[item[3].text] = in1
+                      if item[4].text in outputs:
+                          out1 = outputs[item[4].text]
+                      elif item[4].text in signals:
+                          out1 = signals[item[4].text]
+                      else:
+                          out1 = []
+                          signals[item[4].text] = out1
+                      '''
                       _indin = search_signals(sig_list,item[3].text)
                       _indout = search_signals(sig_list,item[4].text)
                       if _indin==-1:
@@ -134,11 +250,34 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[4].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[4].tag)
-                      process = TimedProcesses.InitT(eval(item[2].text),sig_list[_indin],sig_list[_indout])
+                      '''
+                      process = TimedProcesses.InitT(eval(item[2].text),in1,out1)
                       proc_list.append(process)
               if item[0].text=='Untimed':
                   if item[1].text=='Zip':
                       print item[1].text
+                      if item[4].text in inputs:
+                          in1 = inputs[item[4].text]
+                      elif item[4].text in signals:
+                          in1 = signals[item[4].text]
+                      else:
+                          in1 = []
+                          signals[item[4].text] = in1
+                      if item[5].text in inputs:
+                          in2 = inputs[item[5].text]
+                      elif item[5].text in signals:
+                          in2 = signals[item[5].text]
+                      else:
+                          in2 = []
+                          signals[item[5].text] = in2
+                      if item[6].text in outputs:
+                          out1 = outputs[item[6].text]
+                      elif item[6].text in signals:
+                          out1 = signals[item[6].text]
+                      else:
+                          out1 = []
+                          signals[item[6].text] = out1
+                      '''
                       _indin1 = search_signals(sig_list,item[4].text)
                       _indin2 = search_signals(sig_list,item[5].text)
                       _indout = search_signals(sig_list,item[6].text)
@@ -157,10 +296,33 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[6].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[6].tag)
-                      process = UntimedProcesses.ZipU(eval(item[2].text),eval(item[3].text),sig_list[_indin1],sig_list[_indin2],sig_list[_indout])
+                      '''
+                      process = UntimedProcesses.ZipU(eval(item[2].text),eval(item[3].text),in1,in2,out1)
                       proc_list.append(process)
                   if item[1].text=='UnZip':
                       print item[1].text
+                      if item[2].text in inputs:
+                          in1 = inputs[item[2].text]
+                      elif item[2].text in signals:
+                          in1 = signals[item[2].text]
+                      else:
+                          in1 = []
+                          signals[item[2].text] = in1
+                      if item[3].text in outputs:
+                          out1 = outputs[item[3].text]
+                      elif item[3].text in signals:
+                          out1 = signals[item[3].text]
+                      else:
+                          out1 = []
+                          signals[item[3].text] = out1
+                      if item[4].text in outputs:
+                          out2 = outputs[item[4].text]
+                      elif item[4].text in signals:
+                          out2 = signals[item[4].text]
+                      else:
+                          out2 = []
+                          signals[item[4].text] = out2
+                      '''
                       _indin = search_signals(sig_list,item[2].text)
                       _indout1 = search_signals(sig_list,item[3].text)
                       _indout2 = search_signals(sig_list,item[4].text)
@@ -179,10 +341,26 @@ def parseXml(filename):
                           sig_stack.append(_sig_out2)
                           sig_list.append(item.tag+'/'+item[4].tag)
                           _indout2 = search_signals(sig_list,item.tag+'/'+item[4].tag)
-                      process = UntimedProcesses.UnzipU(sig_list[_indin],sig_list[_indout1],sig_list[_indout2])
+                      '''
+                      process = UntimedProcesses.UnzipU(in1,out1,out2)
                       proc_list.append(process)
                   if item[1].text=='Mealy':
                       print item[1].text
+                      if item[6].text in inputs:
+                          in1 = inputs[item[6].text]
+                      elif item[6].text in signals:
+                          in1 = signals[item[6].text]
+                      else:
+                          in1 = []
+                          signals[item[6].text] = in1
+                      if item[7].text in outputs:
+                          out1 = outputs[item[7].text]
+                      elif item[7].text in signals:
+                          out1 = signals[item[7].text]
+                      else:
+                          out1 = []
+                          signals[item[7].text] = out1
+                      '''
                       _indin = search_signals(sig_list,item[6].text)
                       _indout = search_signals(sig_list,item[7].text)
                       if _indin==-1:
@@ -195,10 +373,26 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[7].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[7].tag)
-                      process = UntimedProcesses.MealyU(item[2].text,item[3].text,item[4].text,eval(item[5].text),sig_list[_indin],sig_list[_indout])
+                      '''
+                      process = UntimedProcesses.MealyU(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
                       proc_list.append(process)
                   if item[1].text=='Map':
                       print item[1].text
+                      if item[4].text in inputs:
+                          in1 = inputs[item[4].text]
+                      elif item[4].text in signals:
+                          in1 = signals[item[4].text]
+                      else:
+                          in1 = []
+                          signals[item[4].text] = in1
+                      if item[5].text in outputs:
+                          out1 = outputs[item[5].text]
+                      elif item[5].text in signals:
+                          out1 = signals[item[5].text]
+                      else:
+                          out1 = []
+                          signals[item[5].text] = out1
+                      '''
                       _indin = search_signals(sig_list,item[4].text)
                       _indout = search_signals(sig_list,item[5].text)
                       if _indin==-1:
@@ -211,10 +405,26 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[5].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[5].tag)
-                      process = UntimedProcesses.MapU(eval(item[2].text),item[3].text,sig_list[_indin],sig_list[_indout])
+                      '''
+                      process = UntimedProcesses.MapU(eval(item[2].text),item[3].text,in1,out1)
                       proc_list.append(process)
                   if item[1].text=='Scan':
                       print item[1].text
+                      if item[5].text in inputs:
+                          in1 = inputs[item[5].text]
+                      elif item[5].text in signals:
+                          in1 = signals[item[5].text]
+                      else:
+                          in1 = []
+                          signals[item[5].text] = in1
+                      if item[6].text in outputs:
+                          out1 = outputs[item[6].text]
+                      elif item[6].text in signals:
+                          out1 = signals[item[6].text]
+                      else:
+                          out1 = []
+                          signals[item[6].text] = out1
+                      '''
                       _indin = search_signals(sig_list,item[5].text)
                       _indout = search_signals(sig_list,item[6].text)
                       if _indin==-1:
@@ -227,10 +437,26 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[6].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[6].tag)
-                      process = UntimedProcesses.ScanU(item[2].text,item[3].text,eval(item[4].text),sig_list[_indin],sig_list[_indout])
+                      '''
+                      process = UntimedProcesses.ScanU(item[2].text,item[3].text,eval(item[4].text),in1,out1)
                       proc_list.append(process)
                   if item[1].text=='Scand':
                       print item[1].text
+                      if item[5].text in inputs:
+                          in1 = inputs[item[5].text]
+                      elif item[5].text in signals:
+                          in1 = signals[item[5].text]
+                      else:
+                          in1 = []
+                          signals[item[5].text] = in1
+                      if item[6].text in outputs:
+                          out1 = outputs[item[6].text]
+                      elif item[6].text in signals:
+                          out1 = signals[item[6].text]
+                      else:
+                          out1 = []
+                          signals[item[6].text] = out1
+                      '''
                       _indin = search_signals(sig_list,item[5].text)
                       _indout = search_signals(sig_list,item[6].text)
                       if _indin==-1:
@@ -243,20 +469,45 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[6].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[6].tag)
-                      process = UntimedProcesses.ScandU(item[2].text,item[3].text,eval(item[4].text),sig_list[_indin],sig_list[_indout])
+                      '''
+                      process = UntimedProcesses.ScandU(item[2].text,item[3].text,eval(item[4].text),in1,out1)
                       proc_list.append(process)
                   if item[1].text=='Source':
                       print item[1].text
+                      if item[4].text in outputs:
+                          out1 = outputs[item[4].text]
+                      elif item[4].text in signals:
+                          out1 = signals[item[4].text]
+                      else:
+                          out1 = []
+                          signals[item[4].text] = out1
+                      '''
                       _indout = search_signals(sig_list,item[4].text)
                       if _indout==-1:
                           _sig_out = []
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[4].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[4].tag)
-                      process = UntimedProcesses.SourceU(item[2].text,eval(item[3].text),sig_list[_indout])
+                      '''
+                      process = UntimedProcesses.SourceU(item[2].text,eval(item[3].text),out1)
                       proc_list.append(process)
                   if item[1].text=='Init':
                       print item[1].text
+                      if item[3].text in inputs:
+                          in1 = inputs[item[3].text]
+                      elif item[3].text in signals:
+                          in1 = signals[item[3].text]
+                      else:
+                          in1 = []
+                          signals[item[3].text] = in1
+                      if item[4].text in outputs:
+                          out1 = outputs[item[4].text]
+                      elif item[4].text in signals:
+                          out1 = signals[item[4].text]
+                      else:
+                          out1 = []
+                          signals[item[4].text] = out1
+                      '''
                       _indin = search_signals(sig_list,item[3].text)
                       _indout = search_signals(sig_list,item[4].text)
                       if _indin==-1:
@@ -269,11 +520,34 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[4].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[4].tag)
-                      process = UntimedProcesses.InitU(eval(item[2].text),sig_list[_indin],sig_list[_indout])
+                      '''
+                      process = UntimedProcesses.InitU(eval(item[2].text),in1,out1)
                       proc_list.append(process)
               if item[0].text=='Synchronous':
                   if item[1].text=='Zip':
                       print item[1].text
+                      if item[2].text in inputs:
+                          in1 = inputs[item[2].text]
+                      elif item[2].text in signals:
+                          in1 = signals[item[2].text]
+                      else:
+                          in1 = []
+                          signals[item[2].text] = in1
+                      if item[3].text in inputs:
+                          in2 = inputs[item[3].text]
+                      elif item[3].text in signals:
+                          in2 = signals[item[3].text]
+                      else:
+                          in2 = []
+                          signals[item[3].text] = in2
+                      if item[4].text in outputs:
+                          out1 = outputs[item[4].text]
+                      elif item[4].text in signals:
+                          out1 = signals[item[4].text]
+                      else:
+                          out1 = []
+                          signals[item[4].text] = out1
+                      '''
                       _indin1 = search_signals(sig_list,item[2].text)
                       _indin2 = search_signals(sig_list,item[3].text)
                       _indout = search_signals(sig_list,item[4].text)
@@ -292,10 +566,33 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[4].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[4].tag)
-                      process = SynchronousProcesses.ZipS(sig_list[_indin1],sig_list[_indin2],sig_list[_indout])
+                      '''
+                      process = SynchronousProcesses.ZipS(in1,in2,out1)
                       proc_list.append(process)
                   if item[1].text=='UnZip':
                       print item[1].text
+                      if item[2].text in inputs:
+                          in1 = inputs[item[2].text]
+                      elif item[2].text in signals:
+                          in1 = signals[item[2].text]
+                      else:
+                          in1 = []
+                          signals[item[2].text] = in1
+                      if item[3].text in outputs:
+                          out1 = outputs[item[3].text]
+                      elif item[3].text in signals:
+                          out1 = signals[item[3].text]
+                      else:
+                          out1 = []
+                          signals[item[3].text] = out1
+                      if item[4].text in outputs:
+                          out2 = outputs[item[4].text]
+                      elif item[4].text in signals:
+                          out2 = signals[item[4].text]
+                      else:
+                          out2 = []
+                          signals[item[4].text] = out2
+                      '''
                       _indin = search_signals(sig_list,item[2].text)
                       _indout1 = search_signals(sig_list,item[3].text)
                       _indout2 = search_signals(sig_list,item[4].text)
@@ -314,10 +611,26 @@ def parseXml(filename):
                           sig_stack.append(_sig_out2)
                           sig_list.append(item.tag+'/'+item[4].tag)
                           _indout2 = search_signals(sig_list,item.tag+'/'+item[4].tag)
-                      process = SynchronousProcesses.UnzipS(sig_list[_indin],sig_list[_indout1],sig_list[_indout2])
+                      '''
+                      process = SynchronousProcesses.UnzipS(in1,out1,out2)
                       proc_list.append(process)
                   if item[1].text=='Mealy':
                       print item[1].text
+                      if item[5].text in inputs:
+                          in1 = inputs[item[5].text]
+                      elif item[5].text in signals:
+                          in1 = signals[item[5].text]
+                      else:
+                          in1 = []
+                          signals[item[5].text] = in1
+                      if item[6].text in outputs:
+                          out1 = outputs[item[6].text]
+                      elif item[6].text in signals:
+                          out1 = signals[item[6].text]
+                      else:
+                          out1 = []
+                          signals[item[6].text] = out1
+                      '''
                       _indin = search_signals(sig_list,item[5].text)
                       _indout = search_signals(sig_list,item[6].text)
                       if _indin==-1:
@@ -330,10 +643,26 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[6].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[6].tag)
-                      process = SynchronousProcesses.MealyS(item[2].text,item[3].text,eval(item[4].text),sig_list[_indin],sig_list[_indout])
+                      '''
+                      process = SynchronousProcesses.MealyS(item[2].text,item[3].text,eval(item[4].text),in1,out1)
                       proc_list.append(process)
                   if item[1].text=='Map':
                       print item[1].text
+                      if item[3].text in inputs:
+                          in1 = inputs[item[3].text]
+                      elif item[3].text in signals:
+                          in1 = signals[item[3].text]
+                      else:
+                          in1 = []
+                          signals[item[3].text] = in1
+                      if item[4].text in outputs:
+                          out1 = outputs[item[4].text]
+                      elif item[4].text in signals:
+                          out1 = signals[item[4].text]
+                      else:
+                          out1 = []
+                          signals[item[4].text] = out1
+                      '''
                       _indin = search_signals(sig_list,item[3].text)
                       _indout = search_signals(sig_list,item[4].text)
                       if _indin==-1:
@@ -346,10 +675,26 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[4].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[4].tag)
-                      process = SynchronousProcesses.MapS(item[2].text,sig_list[_indin],sig_list[_indout])
+                      '''
+                      process = SynchronousProcesses.MapS(item[2].text,in1,out1)
                       proc_list.append(process)
                   if item[1].text=='Scan':
                       print item[1].text
+                      if item[4].text in inputs:
+                          in1 = inputs[item[4].text]
+                      elif item[4].text in signals:
+                          in1 = signals[item[4].text]
+                      else:
+                          in1 = []
+                          signals[item[4].text] = in1
+                      if item[5].text in outputs:
+                          out1 = outputs[item[5].text]
+                      elif item[5].text in signals:
+                          out1 = signals[item[5].text]
+                      else:
+                          out1 = []
+                          signals[item[5].text] = out1
+                      '''
                       _indin = search_signals(sig_list,item[4].text)
                       _indout = search_signals(sig_list,item[5].text)
                       if _indin==-1:
@@ -362,10 +707,26 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[5].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[5].tag)
-                      process = SynchronousProcesses.ScanS(item[2].text,eval(item[3].text),sig_list[_indin],sig_list[_indout])
+                      '''
+                      process = SynchronousProcesses.ScanS(item[2].text,eval(item[3].text),in1,out1)
                       proc_list.append(process)
                   if item[1].text=='Scand':
                       print item[1].text
+                      if item[5].text in inputs:
+                          in1 = inputs[item[5].text]
+                      elif item[5].text in signals:
+                          in1 = signals[item[5].text]
+                      else:
+                          in1 = []
+                          signals[item[5].text] = in1
+                      if item[6].text in outputs:
+                          out1 = outputs[item[6].text]
+                      elif item[6].text in signals:
+                          out1 = signals[item[6].text]
+                      else:
+                          out1 = []
+                          signals[item[6].text] = out1
+                      '''
                       _indin = search_signals(sig_list,item[5].text)
                       _indout = search_signals(sig_list,item[6].text)
                       if _indin==-1:
@@ -378,20 +739,45 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[6].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[6].tag)
-                      process = SynchronousProcesses.ScandS(item[2].text,item[3].text,eval(item[4].text),sig_list[_indin],sig_list[_indout])
+                      '''
+                      process = SynchronousProcesses.ScandS(item[2].text,item[3].text,eval(item[4].text),in1,out1)
                       proc_list.append(process)
                   if item[1].text=='Source':
                       print item[1].text
+                      if item[4].text in outputs:
+                          out1 = outputs[item[4].text]
+                      elif item[4].text in signals:
+                          out1 = signals[item[4].text]
+                      else:
+                          out1 = []
+                          signals[item[4].text] = out1
+                      '''
                       _indout = search_signals(sig_list,item[4].text)
                       if _indout==-1:
                           _sig_out = []
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[4].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[4].tag)
-                      process = SynchronousProcesses.SourceS(item[2].text,eval(item[3].text),sig_list[_indout])
+                      '''
+                      process = SynchronousProcesses.SourceS(item[2].text,eval(item[3].text),out1)
                       proc_list.append(process)
                   if item[1].text=='Init':
                       print item[1].text
+                      if item[3].text in inputs:
+                          in1 = inputs[item[3].text]
+                      elif item[3].text in signals:
+                          in1 = signals[item[3].text]
+                      else:
+                          in1 = []
+                          signals[item[3].text] = in1
+                      if item[4].text in outputs:
+                          out1 = outputs[item[4].text]
+                      elif item[4].text in signals:
+                          out1 = signals[item[4].text]
+                      else:
+                          out1 = []
+                          signals[item[4].text] = out1
+                      '''
                       _indin = search_signals(sig_list,item[3].text)
                       _indout = search_signals(sig_list,item[4].text)
                       if _indin==-1:
@@ -404,7 +790,8 @@ def parseXml(filename):
                           sig_stack.append(_sig_out)
                           sig_list.append(item.tag+'/'+item[4].tag)
                           _indout = search_signals(sig_list,item.tag+'/'+item[4].tag)
-                      process = SynchronousProcesses.InitS(eval(item[2].text),sig_list[_indin],sig_list[_indout])
+                      '''
+                      process = SynchronousProcesses.InitS(eval(item[2].text),in1,out1)
                       proc_list.append(process)
                   '''
               for field in item:
@@ -413,26 +800,26 @@ def parseXml(filename):
                       sig_stack.append(signal)
                       sig_list.append(field.tag)'''
   #everything above this point is code for use in the actual parser
-  print sig_list
-  print sig_stack
+  '''
   function = utilities.stringToFunction(system[2][2][2].text, "w, x")
   x = [1, 2, 3]
   y=function(eval(system[2][2][4].text),x)
   print y
   print x[0]
   print function(1,x)
-  
-  
   state = system[2][2][5].text
   print state
-  
   signal = system[2][2][6].text
   siglist = []
   siglist = signal.split('/')
-  
   print siglist
+  '''
+  print inputs
+  print outputs
+  print signals
+  print proc_list
 
-  return proc_list
+  return (inputs,outputs,proc_list)
   
 def main():
   print "Parsing XML"
