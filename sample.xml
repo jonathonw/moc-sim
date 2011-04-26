@@ -6,13 +6,20 @@
 		</input1>
 		<input2>
 		83,3,4,72,2,4,7,3,24,7,2,134,7,25,7
-		</input2>	
+		</input2>
+		<input3>
+		32.11,342.12,12.23,23.123,1.23
+		</input3>
 	</inputs>
 	<outputs>
 		<output1>
 		</output1>
 		<output2>
 		</output2>
+		<output3>
+		</output3>
+		<output4>
+		</output4>
 	</outputs>
 	<processes>
 		<process1>
@@ -76,5 +83,19 @@
 				outputs/output1
 			</Out1>
 		</process3>
+		<process4>
+			<type>
+				Splitter
+			</type>
+			<In1>
+				process5/Out1
+			</In1>
+			<Out1>
+				outputs/output3
+			</Out1>
+			<Out2>
+				outputs/output4
+			</Out2>
+		</process4>
 	</processes>
 </system>
