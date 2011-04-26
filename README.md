@@ -18,12 +18,12 @@ users can download Python 2.7 from the [Python download page][py-dl].
 
 Getting the simulator
 ---------------------
-You can download the simulator in two ways:
+You can download the simulator in two ways.  Either:
 
-1.  Download a snapshot of the most recent version of the simulator:
+ *  Download a snapshot of the most recent version of the simulator:
     [Windows (zip)][zip], [Linux/OSX (tar.gz)][tarball]
 
-2.  If you have git installed, clone the repository with:
+ *  Or, if you have git installed, clone the repository with:
 
         git clone git@github.com:jonathonw/moc-sim.git
         
