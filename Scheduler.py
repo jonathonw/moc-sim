@@ -22,16 +22,20 @@ class Scheduler:
   
   def runModel(self):
     noInput = False
-    while True:
-      for (key, signal) in self._inputSignals.items():
-        if len(signal) == 0:
-          noInput = True
-          break
-      if not noInput:
-        self.runOneStep()
-      else:
-        print "Out of input."
-        return self._outputSignals
+    try:
+      while True:
+        for (key, signal) in self._inputSignals.items():
+          if len(signal) == 0:
+            noInput = True
+            break
+        if not noInput:
+          self.runOneStep()
+        else:
+          print "Out of input."
+          return self._outputSignals
+    except CausalityException:
+      print "Ran out of runnable processes (infinite loop or input wasn't equally dividable into partitions?)"
+      return self._outputSignals
       
   def runOneStep(self):
     print "Running one step of simulation"
@@ -53,6 +57,15 @@ class Scheduler:
         
     for process in self._processes:
       process.postFire()
+      
+  def outputResults(self):
+    print ""
+    print "--Output-------"
+    for (name, signal) in self._outputSignals.items():
+      print str(name) + ":",
+      for event in signal:
+        print str(event),
+      print ""
 
 def main():
   # amplifier example p122
@@ -107,8 +120,8 @@ else:\n\
   
   scheduler = Scheduler(processList, inputs, outputs)
   
-  returnedOutputSignals = scheduler.runModel()
-  print returnedOutputSignals
+  scheduler.runModel()
+  scheduler.outputResults()
 
 # sample code
 if __name__ == "__main__":  

@@ -5,6 +5,7 @@
 
 import sys
 import XMLParser
+import Scheduler
 
 def main():
   print "Models of computation simulator"
@@ -14,9 +15,10 @@ def main():
   
   inputFile = sys.argv[1]
   print "Parsing input..."
-  processes = XMLParser.parseXml(inputFile)
-  # We need a list of the input signals...  how do we get that?  Is input
-  # supposed to be read from XML too?
+  (input, output, processes) = XMLParser.parseXml(inputFile)
+  scheduler = Scheduler.Scheduler(processes, input, output)
+  scheduler.runModel()
+  scheduler.outputResults()
   
     
 if __name__ == "__main__":
