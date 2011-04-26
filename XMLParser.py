@@ -823,7 +823,7 @@ def parseXml(filename):
   
 def main():
   print "Parsing XML"
-  parseXml("sample.xml")  
+  print parseXml("sample.xml")  
   
 if __name__ == "__main__":
   main()

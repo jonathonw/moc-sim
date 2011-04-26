@@ -21,12 +21,23 @@ class Scheduler:
     self._outputSignals = outputSignals
   
   def runModel(self):
-    pass
-  
+    noInput = False
+    while True:
+      for (key, signal) in self._inputSignals.items():
+        if len(signal) == 0:
+          noInput = True
+          break
+      if not noInput:
+        self.runOneStep()
+      else:
+        print "Out of input."
+        return self._outputSignals
+      
   def runOneStep(self):
     print "Running one step of simulation"
     unrunProcesses = self._processes[:]
     previousCount = 0
+    
     while len(unrunProcesses) > 0:
       print "Number of unrun processes:", len(unrunProcesses)
       previousCount = len(unrunProcesses)
@@ -42,8 +53,6 @@ class Scheduler:
         
     for process in self._processes:
       process.postFire()
-    
-    print self._outputSignals
 
 def main():
   # amplifier example p122
@@ -56,6 +65,9 @@ def main():
   sOut = []  
   sOut1 = []
   sOut2 = []
+  
+  inputs = {"sIn": sIn}
+  outputs = {"sOut2": sOut2, "s3SplitOut": s3SplitOut}
   
   signal1Count = 1
   signal2Count = 5
@@ -93,12 +105,10 @@ else:\n\
   
   processList = [A1,A2,A3,A4, SplitterProcess, S3Splitter]
   
-  scheduler = Scheduler(processList, [sIn], [sOut2, s3SplitOut])
+  scheduler = Scheduler(processList, inputs, outputs)
   
-  while True:
-    scheduler.runOneStep()
-    print "Output:", sOut2
-    print "s3:", s3SplitOut
+  returnedOutputSignals = scheduler.runModel()
+  print returnedOutputSignals
 
 # sample code
 if __name__ == "__main__":  
