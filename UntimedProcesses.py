@@ -40,39 +40,25 @@ class MapU(MealyU):
     initialState = 0
     MealyU.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
-class ScanU(MealyU):
+class ScanU(Processes.ScanProcess):
+  '''
+    Instantiates a ScanU process with an input partition function (gamma),
+    a next state function (g), and an initial state (w_0).
+  '''
+  pass
+
+class ScandU(MealyU):
   def __init__(self, partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal):
     '''
     Instantiates a ScanU process with an input partition function (gamma),
     a next state function (g), and an initial state (w_0).
-
-    The input partition function is simply passed directly to the MealyU
-    constructor.
-
-    The output of ScanU is just the current state, so its output function
-    is "return [w]".
-
-    The next state function and initial sate are simply passed directly to
-    the MealyU constructor.
+  
+    This is exactly the same as ScanU, except that the process outputs
+    its initial state before receiving/handling any input.
     '''
     outputFunction = "return [w]"
     MealyU.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
-
-class ScandU(MealyU):
-  '''
-  Instantiates a ScanU process with an input partition function (gamma),
-  a next state function (g), and an initial state (w_0).
-
-  This is exactly the same as ScanU, except that the process outputs
-  its initial state before receiving/handling any input.
-  '''
-  def __init__(self, partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal):
-    outputFunction = "if w == True:\n\
-  return [%s]\n\
-else:\n\
-  return [x[0]]" % str(initialValue)
-    nextState = "return False"
-
+    
 class SourceU(Processes.SourceProcess):
   '''
 	Untimed Source process - same as generic Source process.

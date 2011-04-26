@@ -2,6 +2,7 @@
 
 import utilities
 import UntimedProcesses
+import Processes
 from Processes import Process
 
 class CausalityException(Exception):
@@ -41,6 +42,8 @@ class Scheduler:
         
     for process in self._processes:
       process.postFire()
+    
+    print self._outputSignals
 
 def main():
   # amplifier example p122
@@ -48,18 +51,22 @@ def main():
   s1 = []
   s2 = []
   s3 = []
+  s3Split1 = []
+  s3SplitOut = []
   sOut = []  
+  sOut1 = []
+  sOut2 = []
   
   signal1Count = 1
   signal2Count = 5
-  inputSignal1 = s3
+  inputSignal1 = s3Split1
   inputSignal2 = sIn
   outputSignal = s1
   A1 = UntimedProcesses.ZipU(signal1Count, signal2Count, inputSignal1, inputSignal2, outputSignal)
   
   partitionConstant = 1
   outputFunction = "print x\n\
-return [x[0][0]*x[0][1][0],x[0][0]*x[0][1][1],x[0][0]*x[0][1][2],x[0][0]*x[0][1][3],x[0][0]*x[0][1][4]]"
+return [x[0][0][0]*x[0][1][0],x[0][0][0]*x[0][1][1],x[0][0][0]*x[0][1][2],x[0][0][0]*x[0][1][3],x[0][0][0]*x[0][1][4]]"
   inputSignal = s1
   outputSignal = sOut
   A2 = UntimedProcesses.MapU(partitionConstant, outputFunction, inputSignal, outputSignal)
@@ -72,23 +79,26 @@ elif x[0]+x[1]+x[2]+x[3]+x[4] < 400:\n\
 else:\n\
   return w"
   initialState = 10
-  inputSignal = sOut
+  inputSignal = sOut1
   outputSignal = s2
   A3 = UntimedProcesses.ScanU(partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal)
+  
+  SplitterProcess = Processes.Splitter(sOut, sOut1, sOut2)
+  S3Splitter = Processes.Splitter(s3, s3Split1, s3SplitOut)
   
   initialValue = 10
   inputSignal = s2
   outputSignal = s3
   A4 = UntimedProcesses.InitU(initialValue, inputSignal, outputSignal)
   
-  processList = [A1,A2,A3,A4]
+  processList = [A1,A2,A3,A4, SplitterProcess, S3Splitter]
   
-  scheduler = Scheduler(processList, [sIn], [sOut])
+  scheduler = Scheduler(processList, [sIn], [sOut2, s3SplitOut])
   
   while True:
-    print sIn
     scheduler.runOneStep()
-    print sOut
+    print "Output:", sOut2
+    print "s3:", s3SplitOut
 
 # sample code
 if __name__ == "__main__":  

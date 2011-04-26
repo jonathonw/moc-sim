@@ -54,6 +54,33 @@ class MealyProcess(Process):
   def postFire(self):
     self._state = self._nextState
     
+class ScanProcess(Process):
+  def __init__(self, partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal):
+    self._partitionFunction = utilities.stringToFunction(partitionFunction, "w")
+    self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w, x")
+    self._state = initialState
+    self._inputSignal = inputSignal
+    self._outputSignal = outputSignal
+    self._nextState = initialState
+    
+  def preFire(self):
+    inputPartitionSize = self._partitionFunction(self._state)
+    if len(self._inputSignal) >= inputPartitionSize:
+      return True
+    else:
+      return False
+    
+  def fire(self):
+    inputPartitionSize = self._partitionFunction(self._state)
+    inputEvents = []
+    for i in range(inputPartitionSize):
+      inputEvents.append(self._inputSignal.pop(0))
+    self._nextState = self._nextStateFunction(self._state, inputEvents)
+    self._outputSignal.append(self._nextState)
+    
+  def postFire(self):
+    self._state = self._nextState
+    
 class ZipProcess(Process):
   def __init__(self, signal1Count, signal2Count, inputSignal1, inputSignal2, outputSignal):
     self._signal1Count = signal1Count
@@ -63,8 +90,6 @@ class ZipProcess(Process):
     self._outputSignal = outputSignal
     
   def preFire(self):
-    print "S1:", len(self._inputSignal1)
-    print "S2:", len(self._inputSignal2)
     if (len(self._inputSignal1) >= self._signal1Count) and (len(self._inputSignal2) >= self._signal2Count):
       return True
     else:
@@ -137,6 +162,32 @@ else:\n\
     nextState = "return False"
     initialState = True
     MealyProcess.__init__(self, partitionFunction, outputFunction, nextState, initialState, inputSignal, outputSignal)
+    
+class Splitter:
+  '''
+  A "meta-process" outside the models of computation which acts as a simple
+  signal splitter--  takes everything that comes in on one signal and outputs
+  it on two signals.
+  '''
+  def __init__(self, inputSignal, outputSignal1, outputSignal2):
+    self._inputSignal = inputSignal
+    self._outputSignal1 = outputSignal1
+    self._outputSignal2 = outputSignal2
+    
+  def preFire(self):
+    if len(self._inputSignal) != 0:
+      return True
+    else:
+      return False
+      
+  def fire(self):
+    while len(self._inputSignal) > 0:
+      stuff = self._inputSignal.pop(0)
+      self._outputSignal1.append(stuff)
+      self._outputSignal2.append(stuff)
+      
+  def postFire(self):
+    pass
  
 def fireProcess(process):
   if process.preFire():

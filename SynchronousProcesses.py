@@ -43,19 +43,12 @@ class MapS(MealyS):
     initialState = 0
     MealyS.__init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
-class ScanS(MealyS):
-  def __init__(self, nextStateFunction, initialState, inputSignal, outputSignal):
-    '''
-    Instantiates a ScanS process with a next state function (g) and an initial state (w_0).
-
-    The output of ScanS is just the current state, so its output function
-    is "return w".
-
-    The next state function and initial sate are simply passed directly to
-    the MealyS constructor.
-    '''
-    outputFunction = "return [w]"
-    MealyS.__init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
+class ScanS(Processes.ScanProcess):
+  '''
+    Instantiates a ScanS process with an input partition function (gamma),
+    a next state function (g), and an initial state (w_0).
+  '''
+  pass
 
 class ScandS(MealyS):
   '''
@@ -65,13 +58,9 @@ class ScandS(MealyS):
   This is exactly the same as ScanS, except that the process outputs
   its initial state before receiving/handling any input.
   '''
-  partitionFunction = "return 1"
-  def __init__(self, partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal):
-    outputFunction = "if w == True:\n\
-  return [%s]\n\
-else:\n\
-  return [x[0]]" % str(initialValue)
-    nextState = "return False"
+  def __init__(self, nextStateFunction, initialState, inputSignal, outputSignal):
+    outputFunction = "return [w]"
+    MealyS.__init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
 class SourceS(Processes.SourceProcess):
   '''
