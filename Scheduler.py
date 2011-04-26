@@ -31,9 +31,57 @@ class Scheduler:
           process.fire
           unrunProcesses.remove(process)
       if previousCount == len(unrunProcesses):
-        print "Can't reconcile process loop"
+        #print "Cant reconcile process loop"
         raise CausalityException("Infinite loop")
         
     for process in self._processes:
       process.postFire()
-      
+
+def main():
+  # amplifier example p122
+  sIn = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+  s1 = []
+  s2 = []
+  s3 = []
+  sOut = []  
+  
+  signal1Count = 1
+  signal2Count = 5
+  inputSignal1 = s3
+  inputSignal2 = sIn
+  outputSignal = s1
+  A1 = ZipU(signal1Count, signal2Count, inputSignal1, inputSignal2, outputSignal)
+  
+  partitionConstant = 1
+  outputFunction = "return [(x[0]*x[1][1],x[0]*x[1][2],x[0]*x[1][3],x[0]*x[1][4],x[0]*x[1][5])"
+  inputSignal = s1
+  outputSignal = sOut
+  A2 = MapU(partitionConstant, outputFunction, inputSignal, outputSignal)
+  
+  partitionConstant = 5
+  nextStateFunction = "if x[0]+x[1]+x[2]+x[3]+x[4] > 500:\n\
+  return w-1\n\
+elif x[0]+x[1]+x[2]+x[3]+x[4] < 400:\n\
+  return w+1\n\
+else:\n\
+  return w"
+  inputSignal = sOut
+  outputSignal = s2
+  A3 = ScanU(partitionConstant, outputFunction, inputSignal, outputSignal)
+  
+  initialValue = 10
+  inputSignal = s2
+  outputSignal = s3
+  A4 = InitU(initialValue, inputSignal, outputSignal)
+  
+  processList = [A1,A2,A3,A4]
+  
+  scheduler = Scheduler(processList, [sIn], [sOut])
+  
+  while True:
+    scheduler.runOneStep()
+    print sOut
+
+# sample code
+if __name__ == "__main__":  
+  main()
