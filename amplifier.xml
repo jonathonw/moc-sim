@@ -30,10 +30,9 @@
 				processA4/Out1
 			</In1>
 			<In2>
-				inputs/input
+				inputs/input1
 			</In2>
 			<Out1>
-        processA2/In1
 			</Out1>
 		</processA1>
     <!--A2-->
@@ -49,11 +48,11 @@
       </PartConst> 
       <OutFunc>
         return [x[0][0][0]*x[0][1][0],x[0][0][0]*x[0][1][1],x[0][0][0]*x[0][1][2],x[0][0][0]*x[0][1][3],x[0][0][0]*x[0][1][4]]
-			<In1>
+			</OutFunc>
+      <In1>
 				processA1/Out1
 			</In1>
 			<Out1>
-				processSplit/In1
 			</Out1>
 		</processA2>
     <!--A3-->
@@ -68,12 +67,12 @@
         return 5
       </PartFunc>
 			<StateFunc>
-				if x[0]+x[1]+x[2]+x[3]+x[4] &gt 500:
-          return w-1
-        elif x[0]+x[1]+x[2]+x[3]+x[4] &lt 400:
-          return w+1
-        else:
-          return w
+if x[0]+x[1]+x[2]+x[3]+x[4] &gt; 500:
+  return w-1
+elif x[0]+x[1]+x[2]+x[3]+x[4] &lt; 400:
+  return w+1
+else:
+  return w
 			</StateFunc>
 			<InitState>
 				10
@@ -82,7 +81,6 @@
 				processSplit/Out1
 			</In1>
 			<Out1>
-				processA4/In1
 			</Out1>
 		</processA3>
     <!--A4-->
@@ -100,7 +98,6 @@
 				processA3/Out1
 			</In1>
 			<Out1>
-				processA1/In1
 			</Out1>
 		</processA4>
     <processSplit>
@@ -111,10 +108,9 @@
         processA2/Out1
       </In1>
       <Out1>
-        processA3/In1
       </Out1>
       <Out2>
-        outputs/output
+        outputs/output1
       </Out2>
     </processSplit>
 	</processes>
