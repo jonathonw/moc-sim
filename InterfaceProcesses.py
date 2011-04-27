@@ -4,14 +4,11 @@ import Processses
 import UntimedProcesses
 import TimedProcesses
 	
-'''class Interface(Processes.MealyProcess):
+class Interface(Processes.MealyProcess):
 
-  def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
-    Processes.MealyProcess.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
-
-  def runOneStep(self):
-    Processes.MealyProcess.runOneStep(self)'''
-
+  '''def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
+    Processes.MealyProcess.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)'''
+	pass
 	
 class intSup(UntimedProcesses.MapU):  
 	''' 
@@ -66,6 +63,13 @@ class StripS2U(Processes.MealyProcess):
     self._outputSignal = outputSignal
     self._nextState = initialState
 	
+  def preFire(self):
+    inputPartitionSize = self._partitionFunction(self._state)
+    if len(self._inputSignal) >= inputPartitionSize:
+      return True
+    else:
+      return False	
+	
   def fire(self):
     '''
     Removes the time events
@@ -82,6 +86,7 @@ class StripS2U(Processes.MealyProcess):
     self._outputSignal.extend(outputEvents)
 	
   def postFire(self):
+    self._state = self._nextState
 
 class StripT2S(MealyT):
   # still need to figure out
@@ -100,6 +105,13 @@ class StripT2U(MealyT):
     self._outputSignal = outputSignal
     self._nextState = initialState
 	
+  def preFire(self):
+    inputPartitionSize = self._partitionFunction(self._state)
+    if len(self._inputSignal) >= inputPartitionSize:
+      return True
+    else:
+      return False
+  
   def fire(self):
     '''
     Removes the time events
@@ -116,7 +128,7 @@ class StripT2U(MealyT):
     self._outputSignal.extend(outputEvents)
 	
   def postFire(self):
-
+    self._state = self._nextState
 '''  
 class InsertS2T
 	#def __init__():
