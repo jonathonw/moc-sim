@@ -95,6 +95,7 @@ def parseXml(filename):
               if field.tag!='StateFunc' and field.tag!='OutFunc' and field.tag!='PartFunc':
                   field.text = field.text.replace('\n','')    # remove all the extra newlines
                   field.text = field.text.replace('\t','')    # remove all the extra tabs
+                  field.text = field.text.replace(' ','')
   '''
   The code below prints out the tree,
   use it for debugging
@@ -129,13 +130,14 @@ def parseXml(filename):
       else:
           for item in obj:
               if item[0].text=='Splitter':
-                  print item[0].text
+                  print 'Creating ' + item[0].text
                   in1 = getInputs(item,1)
-                  print in1
                   (out1,out2) = getOutputs(item,2,3)
                   process = Processes.Splitter(in1,out1,out2)
                   proc_list.append(process)
+                  print proc_list
               elif item[0].text=='Timed':
+                  print 'Creating Timed '
                   if item[1].text=='Zip':
                       print item[1].text
                       (in1,in2) = getInputs(item,4,5)
@@ -166,6 +168,7 @@ def parseXml(filename):
                       process = TimedProcesses.InitT(eval(item[2].text),in1,out1)
                       proc_list.append(process)
               elif item[0].text=='Untimed':
+                  print 'Creating Untimed '
                   if item[1].text=='Zip':
                       print item[1].text
                       (in1,in2) = getInputs(item,4,5)
@@ -214,6 +217,7 @@ def parseXml(filename):
                       process = UntimedProcesses.InitU(eval(item[2].text),in1,out1)
                       proc_list.append(process)
               elif item[0].text=='Synchronous':
+                  print 'Creating Synchronous '
                   if item[1].text=='Zip':
                       print item[1].text
                       (in1,in2) = getInputs(item,2,3)
@@ -285,7 +289,7 @@ def parseXml(filename):
   
 def main():
   print "Parsing XML"
-  print parseXml("sample.xml")  
+  print parseXml("amplifier.xml")  
   
 if __name__ == "__main__":
   main()
