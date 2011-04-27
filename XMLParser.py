@@ -48,7 +48,7 @@ def getInputs(item,ind1,ind2=None):
           in2 = []
           signals[item[ind2].text] = in2
     else:
-        in2=None
+        return in1
 
     return (in1,in2)
 
@@ -82,7 +82,7 @@ def getOutputs(item,ind1,ind2=None):
           out2=[]
           signals[item[ind2].text] = out2
     else:
-        out2=None
+        return out1
     
     return (out1,out2)
 
@@ -131,6 +131,7 @@ def parseXml(filename):
               if item[0].text=='Splitter':
                   print item[0].text
                   in1 = getInputs(item,1)
+                  print in1
                   (out1,out2) = getOutputs(item,2,3)
                   process = Processes.Splitter(in1,out1,out2)
                   proc_list.append(process)
