@@ -2,7 +2,28 @@
 import utilities
 
 class Process:
-  pass
+  def preFire(self):
+    '''
+    Evaluates the partition function and decides if the input signal(s) have
+    enough input for this process to run.  Returns True if there is enough
+    input; returns False if there is not.
+    '''
+    return False
+    
+  def fire(self):
+    '''
+    Takes input, runs the output function, and puts the output in the output
+    signals.  Should compute but does not *update* the next state.
+    '''
+    pass
+  
+  def postFire(self):
+    '''
+    Updates the state of the process (typically, the state would be computed in
+    the fire() method; then the actual state member variable would be updated
+    in this method).
+    '''
+    pass
 
 class MealyProcess(Process):
   '''A generic Mealy process.'''
