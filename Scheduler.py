@@ -90,8 +90,7 @@ def main():
   A1 = UntimedProcesses.ZipU(signal1Count, signal2Count, inputSignal1, inputSignal2, outputSignal)
   
   partitionConstant = 1
-  outputFunction = "print x\n\
-return [x[0][0][0]*x[0][1][0],x[0][0][0]*x[0][1][1],x[0][0][0]*x[0][1][2],x[0][0][0]*x[0][1][3],x[0][0][0]*x[0][1][4]]"
+  outputFunction = "return [x[0][0][0]*x[0][1][0],x[0][0][0]*x[0][1][1],x[0][0][0]*x[0][1][2],x[0][0][0]*x[0][1][3],x[0][0][0]*x[0][1][4]]"
   inputSignal = s1
   outputSignal = sOut
   A2 = UntimedProcesses.MapU(partitionConstant, outputFunction, inputSignal, outputSignal)
