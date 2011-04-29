@@ -1,0 +1,117 @@
+<?xml version='1.0' ?>
+<system>
+	<inputs>
+		<input1>
+      1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
+		</input1>
+	</inputs>
+
+	<outputs>
+		<output1>
+		</output1>
+	</outputs>
+
+	<processes>
+    <!--A1-->
+		<processA1>
+			<MoC>
+				Untimed
+			</MoC>
+			<Type>
+				Zip
+			</Type>
+			<Count1>
+				1
+			</Count1>
+			<Count2>
+				5
+			</Count2>
+			<In1>
+				processA4/Out1
+			</In1>
+			<In2>
+				inputs/input1
+			</In2>
+			<Out1>
+			</Out1>
+		</processA1>
+    <!--A2-->
+		<processA2>
+			<MoC>
+				Untimed
+			</MoC>
+			<Type>
+				Map
+			</Type>
+      <PartConst>
+        1
+      </PartConst> 
+      <OutFunc>
+        return [x[0][0][0]*x[0][1][0],x[0][0][0]*x[0][1][1],x[0][0][0]*x[0][1][2],x[0][0][0]*x[0][1][3],x[0][0][0]*x[0][1][4]]
+			</OutFunc>
+      <In1>
+				processA1/Out1
+			</In1>
+			<Out1>
+			</Out1>
+		</processA2>
+    <!--A3-->
+		<processA3>
+			<MoC>
+				Untimed
+			</MoC>
+			<Type>
+				Scan
+			</Type>
+      <PartFunc>
+        return 5
+      </PartFunc>
+			<StateFunc>
+if x[0]+x[1]+x[2]+x[3]+x[4] &gt; 500:
+  return w-1
+elif x[0]+x[1]+x[2]+x[3]+x[4] &lt; 400:
+  return w+1
+else:
+  return w
+			</StateFunc>
+			<InitState>
+				10
+			</InitState>
+			<In1>
+				processSplit/Out1
+			</In1>
+			<Out1>
+			</Out1>
+		</processA3>
+    <!--A4-->
+    <processA4>
+			<MoC>
+				Untimed
+			</MoC>
+			<Type>
+				Init
+			</Type>
+      <InitVal>
+        10
+      </InitVal>
+			<In1>
+				processA3/Out1
+			</In1>
+			<Out1>
+			</Out1>
+		</processA4>
+    <processSplit>
+      <Type>
+        Splitter
+      </Type>
+      <In1>
+        processA2/Out1
+      </In1>
+      <Out1>
+      </Out1>
+      <Out2>
+        outputs/output1
+      </Out2>
+    </processSplit>
+	</processes>
+</system>

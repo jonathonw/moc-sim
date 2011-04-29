@@ -43,12 +43,12 @@ class Scheduler:
     previousCount = 0
     
     while len(unrunProcesses) > 0:
-      print "Number of unrun processes:", len(unrunProcesses)
+      #print "Number of unrun processes:", len(unrunProcesses)
       previousCount = len(unrunProcesses)
       for process in unrunProcesses:
-        print "Trying to run a process", process.__class__.__name__
+        #print "Trying to run a process", process.__class__.__name__
         if process.preFire():
-          print "Process was able to run", process.__class__.__name__
+          #print "Process was able to run", process.__class__.__name__
           process.fire()
           unrunProcesses.remove(process)
       if previousCount == len(unrunProcesses):
