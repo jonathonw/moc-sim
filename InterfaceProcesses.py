@@ -5,12 +5,6 @@ import TimedProcesses
 import SynchronousProcesses
 import utilities
 	
-class Interface(Processes.MealyProcess):
-
-  '''def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
-    Processes.MealyProcess.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)'''
-  pass
-	
 class intSup(Processes.Process):#UntimedProcesses.MapU):  
 
   def __init__(self, partitionConstant, outputFunction, inputSignal, outputSignal):
