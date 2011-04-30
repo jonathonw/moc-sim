@@ -56,9 +56,10 @@ where sample.xml is the XML file containing the model to be simulated.
 
 Creating a Model of a System in XML
 -----------------------------------
-The XML system file is defined in a global system container <system>,
-which encapsulates the <inputs>, <outputs>, and <processes> in the overall structure:
+The XML system file is defined in a global system container `<system>`,
+which encapsulates the `<inputs>`, `<outputs>`, and `<processes>` in the overall structure:
 	
+    <?xml version='1.0' ?>
     <system>
         <inputs>
         </inputs>
@@ -99,9 +100,12 @@ These sections are created in the following way:
         </outputs>
 
  *  Processes:
-    The outputs follow the same convention as the inputs, with the 
-    exception that they cannot have strings (initial values). An
-    example of two outputs loaded within the global outputs:
+    The processes are generated similarly to the inputs and outputs,
+    with the exception that they have many more fields within each process.
+    If a process is directly from a Model of Computation (MoC), then it has 
+    as its first two fields `<MoC>` and `<Type>`.  `<MoC>` accepts as valid text:
+    Untimed, Timed, and Synchronous (for each type of MoC).  `<Type>` accepts as valid
+    processes, all the processes listed in [Supported Processes][Supported-Processes].
     
         <processes>
             <process1>
@@ -109,3 +113,5 @@ These sections are created in the following way:
             <namedprocess>
             </namedprocess>
         </processes>
+
+[Supported-Processes]: SupportedProcesses.md
