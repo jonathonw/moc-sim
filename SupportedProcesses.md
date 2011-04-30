@@ -1,11 +1,12 @@
 Untimed MoC:
-	Mealy
+	Mealy ()
+	Zip (Signal 1 Count, Signal 2 Count, input 1, input 2, output 1)
 	
 Timed MoC:
-	Mealy
+	Mealy ()
 	
 Synchronous MoC:
-	Mealy
+	Mealy ()
 	
 Interfaces:
-	StripS2U
+	StripS2U ()
