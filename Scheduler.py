@@ -8,6 +8,7 @@ from Processes import Process
 class CausalityException(Exception):
   pass
 
+## The process scheduler; decides when processes should be activated.
 class Scheduler:
   '''
   Scheduler for processes.  Processes is the list of processes, inputSignals is a
@@ -15,11 +16,20 @@ class Scheduler:
   is a list of output signals that aren't connected to another process (so, our
   final output).
   '''
+  ## Instantiates a Scheduler object.
+  #
+  #  @param processes The list of processes.
+  #  @param inputSignals  A dictionary of input signals (name: signal)
+  #                       read from the XML input file.
+  #  @param outputSignals A dictionary of output signals (name: signal) read
+  #                       from the XML input file.
   def __init__(self, processes, inputSignals, outputSignals):
     self._processes = processes
     self._inputSignals = inputSignals
     self._outputSignals = outputSignals
   
+  ## Runs the model.  Runs until either an input signal runs out of input, or
+  #  until there are no runnable processes in the system.
   def runModel(self):
     noInput = False
     try:
@@ -37,6 +47,8 @@ class Scheduler:
       print "Ran out of runnable processes (infinite loop or input wasn't equally dividable into partitions?)"
       return self._outputSignals
       
+  ## Runs one step of the simulation.  Determines which processes have input
+  #  available, runs them, and loops until all processes have been run.
   def runOneStep(self):
     print "Running one step of simulation"
     unrunProcesses = self._processes[:]
@@ -58,6 +70,7 @@ class Scheduler:
     for process in self._processes:
       process.postFire()
       
+  ## Outputs the results (output signals) of the simulation.
   def outputResults(self):
     print ""
     print "--Output-------"
