@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-# Main entry point for the simulator...  this is what you run if you want to run
-# the whole simulator (rather than our built-in test code).
+## @package Simulator
+#  The Main entry point for the simulator.  This python file is what you run if 
+#  you want to run the whole simulator (rather than our built-in test code).
 
 import sys
 import XMLParser

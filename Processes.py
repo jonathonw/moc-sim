@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import utilities
 
+## Superclass for all processes.  Should not be instantiated directly; it won't
+#  do anything.
 class Process:
   ## Evaluates the partition function and decides if the input signal(s) have
   #  enough input for this process to run.

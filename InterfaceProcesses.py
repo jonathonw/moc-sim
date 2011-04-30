@@ -5,11 +5,14 @@ import TimedProcesses
 import SynchronousProcesses
 import utilities
 
-''' 
-Removes timing information from a synchronous process such that an untimed process
-can use it.  
-'''
+
+## Synchronous to Untimed Interface Process
 class StripS2U(Processes.Process):
+  ## Instantiates a StripS2U process.  The output signal is basically just the
+  #  first event of the input signal as long as it is not null.
+  #
+  #  @param inputSignal       The input signal to this process.
+  #  @param outputSignal      The output signal from this process.
   def __init__(self, inputSignal, outputSignal):
 
     self._inputSignal = inputSignal
@@ -35,12 +38,14 @@ class StripS2U(Processes.Process):
   def postFire(self):
     pass
 		
-''' 
-Removes timing information from a timed process such that an untimed process
-can use it.  
-'''
-class StripT2U(Processes.Process):
 
+## Timed to Untimed Interface process
+class StripT2U(Processes.Process):
+  ## Instantiates a StripT2U process.  The output signal is basically just the
+  #  first event of the input signal as long as it is not null.
+  #
+  #  @param inputSignal       The input signal to this process.
+  #  @param outputSignal      The output signal from this process.
   def __init__(self, inputSignal, outputSignal):
 
     self._inputSignal = inputSignal
@@ -66,11 +71,15 @@ class StripT2U(Processes.Process):
   def postFire(self):
     pass
 	
-''' 
-Removes timing information from a timed process such that a synchronous process
-can use it.  
-'''
+
+## Timed to Synchronous Interface Process
 class StripT2S(Processes.Process):
+  ## Instantiates a StripT2S process.  The output signal is basically the
+  #  same as the input signal as long as the events are not null.
+  #
+  #  @param r                 The input partition.
+  #  @param inputSignal       The input signal to this process.
+  #  @param outputSignal      The output signal from this process.
   def __init__(self, r, inputSignal, outputSignal):
 
 	self._r  = r
@@ -101,8 +110,15 @@ class StripT2S(Processes.Process):
   def postFire(self):
     pass
   
-
+## Synchronous to Timed Interface Process
 class InsertS2T(Processes.Process):
+  ## Instantiates an InsertS2T process.  The output signal is
+  #  an r number of events of the first event of the input
+  #  signal.
+  #
+  #  @param r                 The input partition.
+  #  @param inputSignal       The input signal to this process.
+  #  @param outputSignal      The output signal from this process.
   def __init__(self, r, inputSignal, outputSignal):
 
 	self._r = r
@@ -128,8 +144,16 @@ class InsertS2T(Processes.Process):
  
   def postFire(self):
     pass
-		
+
+## Untimed to Timed Interface Process
 class InsertU2T(Processes.Process):
+  ## Instantiates an InsertU2T process.  The output signal is
+  #  an r number of events of the first event of the input
+  #  signal.
+  #
+  #  @param r                 The input partition.
+  #  @param inputSignal       The input signal to this process.
+  #  @param outputSignal      The output signal from this process.
   def __init__(self, r, inputSignal, outputSignal):
     self._r = r
     self._inputSignal = inputSignal
@@ -154,7 +178,15 @@ class InsertU2T(Processes.Process):
   def postFire(self):
     pass
 		
+## Untimed to Synchronous Interface Process
 class InsertU2S(Processes.Process):
+  ## Instantiates an InsertU2S process.  The output signal is
+  #  an r number of events of the first event of the input
+  #  signal.
+  #
+  #  @param r                 The input partition.
+  #  @param inputSignal       The input signal to this process.
+  #  @param outputSignal      The output signal from this process.
   def __init__(self, r, inputSignal, outputSignal):
     self._r = r
     self._inputSignal = inputSignal
