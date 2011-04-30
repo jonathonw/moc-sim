@@ -6,72 +6,80 @@ import UntimedProcesses
 Synchronous processes
 '''
 
+## Synchronous Mealy process.  Same as generic Mealy but with partition function
+#  of 1.
 class MealyS(Processes.MealyProcess):
-  ''' Synchronous Mealy process - same as generic Mealy but with partition function of 1'''
   def __init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
     partitionFunction = "return 1"
     Processes.MealyProcess.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
     
+## Synchronous Zip process.  Same as generic Zip but with input partition 
+#  functions of 1.
 class ZipS(Processes.ZipProcess):
-  '''
-  Synchronous Zip process - same as generic Zip
-  but with input partition functions of 1
-  '''
   def __init__(self, inputSignal1, inputSignal2, outputSignal):
     signal1Count = 1
     signal2Count = 1
     Processes.ZipProcess.__init__(self, signal1Count, signal1Count, inputSignal1, inputSignal2, outputSignal)
 
+## Synchronous Unzip process.  Same as generic Unzip.
 class UnzipS(Processes.UnzipProcess):
-  ''' Synchronous Unzip process - same as generic Unzip '''
   pass
 
+## Synchronous Map process.  Basically, a simplified Synchronous Mealy process.
 class MapS(MealyS):
-  ''' Synchronous Map process - basically a simplified Synchronous Mealy process '''
+  ## Instantiates a Map process with a specified output function.  The output of
+  #  MapS is just a function of the input, as opposed to MealyS, where the 
+  #  output is a function of both the input and the state.
+  #
+  #  Each function should be specified as a string containing Python code (which
+  #  will be evaluated at runtime); parameters are w (the current state), and x 
+  #  (the input).  x will be a list containing the input partition for this 
+  #  execution of the process.
+  #
+  #  @param outputFunction    The output function (f) for this process.  Should
+  #                           return the process's output (as a list).
+  #  @param inputSignal       The input signal to this process.
+  #  @param outputSignal      The output signal from this process.
   def __init__(self, outputFunction, inputSignal, outputSignal):
-    '''
-    Instantiates an MapS process with an output function (f).
-
-    The output of MapS is just a function of the input, as opposed MealyS, where
-    the output is a function of both the input and the state. This is fine - MealyS
-    still works just fine without any state (w) arguments in its output function.
-
-    The Synchronous Map process is stateless, so we just pass a dummy function and
-    initial state to the generic mealy process.
-    '''
+    #The Synchronous Map process is stateless, so we just pass a dummy function and
+    #initial state to the generic mealy process.
     nextStateFunction = "return 0"
     initialState = 0
     MealyS.__init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
+## Synchronous Scan process.
 class ScanS(Processes.ScanProcess):
-  '''
-    Instantiates a ScanS process with an input partition function (gamma),
-    a next state function (g), and an initial state (w_0).
-  '''
   pass
 
+## Synchronous ScandS process.  The same as ScanS, except that the process
+#  outputs its initial state before receiving or handling any input.
 class ScandS(MealyS):
-  '''
-  Instantiates a ScanS process with an input partition function (gamma),
-  a next state function (g), and an initial state (w_0).
-
-  This is exactly the same as ScanS, except that the process outputs
-  its initial state before receiving/handling any input.
-  '''
+  ## Instantiates a ScandS process with a next state function and initial 
+  #  state.
+  #
+  #  Each function should be specified as a string containing Python code (which
+  #  will be evaluated at runtime); parameters are w (the current state), and x 
+  #  (the input).  x will be a list containing the input partition for this 
+  #  execution of the process.
+  #
+  #  @param nextStateFunction The next state function (g) for this process.
+  #                           Should return the next state (consistent with the
+  #                           type used for the initial state).
+  #  @param initialState      The initial state for the system.  Can be any
+  #                           type, but should be consistent with the type
+  #                           returned by nextStateFunction.
+  #  @param inputSignal       The input signal to this process.
+  #  @param outputSignal      The output signal from this process.
   def __init__(self, nextStateFunction, initialState, inputSignal, outputSignal):
     outputFunction = "return [w]"
     MealyS.__init__(self, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
+## A synchronous Source process.  Same as the generic Source process.
 class SourceS(Processes.SourceProcess):
-  '''
-  Synchronous Source process - same as generic Source process.
-  '''
   pass
 
+## A synchronous Init process.  Same as the generic Init process.
 class InitS(Processes.InitProcess):
-  '''
-  Synchronous Init process - same as generic Source process.
-  '''
   pass
 
 def fireProcess(process):

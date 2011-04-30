@@ -2,6 +2,7 @@
 
 import Processes
 
+
 class MealyT(Processes.MealyProcess):
   pass
 
