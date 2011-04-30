@@ -2,19 +2,23 @@
 
 import Processes
 
-
+## A timed Mealy process.
 class MealyT(Processes.MealyProcess):
   pass
 
+## A timed Zip process.
 class ZipT(Processes.ZipProcess):
   pass
 
+## A timed Unzip process.
 class UnzipT(Processes.UnzipProcess):
   pass
 
+## A timed Source process.
 class SourceT(Processes.SourceProcess):
   pass
 
+## A timed Init process.
 class InitT(Processes.InitProcess):
   pass
 

@@ -197,7 +197,7 @@ class SourceProcess(Process):
   #  @param intialState       The initial state for the system.  Can be any
   #                           type, but should be consistent with the type
   #                           returned by nextStateFunction.
-  #  @param inputSignal       The input signal to this process.
+  #  @param outputSignal       The output signal from this process.
   def __init__(self, nextStateFunction, initialState, outputSignal):
     self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w")
     self._state = initialState
