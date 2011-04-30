@@ -121,7 +121,9 @@ These sections are created in the following way:
         The fields following `<MoC>` and `<Type>` are specific to each process and follow the order
         of the *init* functions for each process. This order is reproduced in [Supported Processes][Supported-Processes]
         after each respective supported process. Again, the tags for the fields can be renamed by the user,
-        but their order must remain intact.
+        but their order must remain intact.  For functions that are to be supplied by the user (such as
+        `<PartFunc>`,`<StateFunc>`, or `<OutputFunc>`), the functions must be valid python functions, with correct
+        python indentation.
         An example process is defined this way:
         
             <process1>
@@ -175,9 +177,8 @@ These sections are created in the following way:
         by the field `<Transform>`.  It accepts as valid text
         all of the interfaces listed in the interfaces section of
         [Supported Processes][Supported-Processes].  The `<PartConst>`
-        field accepts a number which is used as the partition constant
-        for the input signal.  The output function accepts any valid
-        formatted python function, as described above.
+        field, if the process supports it, accepts a number which is 
+        used as the partition constant for the input signal.
         Interface processes are defined this way:
         
             <process6>
@@ -185,14 +186,11 @@ These sections are created in the following way:
                     Interface
                 </type>
                 <Transform>
-                    intSdown
+                    StripT2S
                 </Transform>
                 <PartConst>
                     3
                 </PartConst>
-                <OutFunc>
-                    return [(x[0] + 1)]
-                </OutFunc>
                 <In1>
                 </In1>
                 <Out1>

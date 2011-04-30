@@ -102,20 +102,8 @@
 				Interface
 			</type>
 			<Transform>
-				StripT2S
+				StripT2U
 			</Transform>
-			<PartFunc>
-				return 3
-			</PartFunc>
-			<OutFunc>
-				return [(x[0] + w)]
-			</OutFunc>
-			<StateFunc>
-				return x[0]
-			</StateFunc>
-			<InitState>
-				1
-			</InitState>
 			<In1>
 				process5/Out1
 			</In1>
@@ -128,14 +116,11 @@
 				Interface
 			</type>
 			<Transform>
-				intSdown
+				StripT2S
 			</Transform>
 			<PartConst>
 				3
 			</PartConst>
-			<OutFunc>
-				return [(x[0] + 1)]
-			</OutFunc>
 			<In1>
 			</In1>
 			<Out1>
