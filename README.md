@@ -52,3 +52,60 @@ systems, you should be able to run the simulator with:
 where sample.xml is the XML file containing the model to be simulated.
 
 [python-path]: http://docs.python.org/using/windows.html#excursus-setting-environment-variables
+
+
+Creating a Model of a System in XML
+-----------------------------------
+The XML system file is defined in a global system container <system>,
+which encapsulates the <inputs>, <outputs>, and <processes> in the overall structure:
+	
+    <system>
+        <inputs>
+        </inputs>
+        <outputs>
+        </outputs>
+        <processes>
+        </processes>
+    </system>
+
+These sections are created in the following way:
+
+ *  Inputs:
+    Each input must have a tag and an input value string. The string
+    is a comma separated value string of floating point numbers.
+    All floating point numbers are accepted in this string, as is the
+    'Absent' input.
+    Here are two example inputs loaded within the global inputs:
+    
+        <inputs>
+            <input1>
+            23.0,10,0,2,45.56
+            </input1>
+            <myinput>
+            Absent,0.23,55,Absent,0
+            </myinput>
+        </inputs>
+    
+ *  Outputs:
+    The outputs follow the same convention as the inputs, with the 
+    exception that they cannot have strings (initial values). An
+    example of two outputs loaded within the global outputs:
+    
+        <outputs>
+            <namedoutput>
+            </namedoutput>
+            <output1>
+            </output1>
+        </outputs>
+
+ *  Processes:
+    The outputs follow the same convention as the inputs, with the 
+    exception that they cannot have strings (initial values). An
+    example of two outputs loaded within the global outputs:
+    
+        <processes>
+            <process1>
+            </process1>
+            <namedprocess>
+            </namedprocess>
+        </processes>
