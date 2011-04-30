@@ -342,8 +342,11 @@ def parseXml(filename):
   return (inputs,outputs,proc_list)
   
 def main():
-  print "Parsing XML"
-  print parseXml("examples/sample.xml")  
+  print "Parsing Sample File"
+  print parseXml("examples/sample.xml")
+  print
+  print "Parsing Amplifier File"
+  print parseXml("examples/amplifier.xml")
   
 if __name__ == "__main__":
   main()
