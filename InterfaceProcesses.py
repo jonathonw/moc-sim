@@ -4,12 +4,6 @@ import Processses
 import UntimedProcesses
 import TimedProcesses
 	
-class Interface(Processes.MealyProcess):
-
-  '''def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
-    Processes.MealyProcess.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)'''
-	pass
-	
 class intSup(UntimedProcesses.MapU):  
 	''' 
 	Uprate process for interfaces between two domains of the same MoC
