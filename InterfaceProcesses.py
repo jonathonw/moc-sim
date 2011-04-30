@@ -307,9 +307,11 @@ else:\n\
   
   timedProcess = TimedProcesses.MealyT(partitionFunction, outputFunction, nextStateFunction, initialState, in_timed, out_timed)
 
+  outputFunction = "return [(x[0]+w)]"
+  nextStateFunction = "return x[0]"
   in_interface = out_timed
   out_interface = []
-  interface = StripT2S("return 3", outputFunction, nextStateFunction, initialState, in_interface,out_interface)
+  interface = StripT2S("return 1", outputFunction, nextStateFunction, initialState, in_interface,out_interface)
   
   outputFunction = "return [(x[0]+w)]"
   nextStateFunction = "return x[0]"
@@ -317,15 +319,15 @@ else:\n\
   out_synchronous = []
   synchronousProcess = SynchronousProcesses.MealyS(outputFunction, nextStateFunction, initialState, in_synchronous, out_synchronous)  
 
-  print "InputSignal:", in_timed
-    
-  fireProcess(timedProcess)
-  fireProcess(timedProcess)
-  fireProcess(timedProcess)
-  fireProcess(interface)
-  fireProcess(synchronousProcess)
+  for i in range(0,3):
+    print "After step",i,":"
+    print "InputSignal:", in_timed
+      
+    fireProcess(timedProcess)
+    fireProcess(interface)
+    fireProcess(synchronousProcess)
 
-  print "OutputSignal:", out_synchronous
+    print "OutputSignal:", out_synchronous
   
   
   
