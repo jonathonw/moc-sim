@@ -102,10 +102,9 @@ These sections are created in the following way:
  *  Processes:
     The processes are generated similarly to the inputs and outputs,
     with the exception that they have many more fields within each process.
-    If a process is directly from a Model of Computation (MoC), then it has 
-    as its first two fields `<MoC>` and `<Type>`.  `<MoC>` accepts as valid text:
-    Untimed, Timed, and Synchronous (for each type of MoC).  `<Type>` accepts as valid
-    processes, all the processes listed in [Supported Processes][Supported-Processes].
+    The fields can be named whatever the user wishes, as long as they retain
+    the same order as the examples provided.
+    Generically, processes are defined this way:
     
         <processes>
             <process1>
@@ -114,4 +113,62 @@ These sections are created in the following way:
             </namedprocess>
         </processes>
 
+    Processes can be of these forms:
+     *  Models of Computation (MoCs):
+        The processes are generated similarly to the inputs and outputs,
+        with the exception that they have many more fields within each process.
+        first two fields `<MoC>` and `<Type>`.  `<MoC>` accepts as valid text:
+        Untimed, Timed, and Synchronous (for each type of MoC).  `<Type>` accepts as valid
+        processes, all the processes listed in [Supported Processes][Supported-Processes]
+        Processes are defined this way:
+        
+     *  Splitters:
+        Splitters simply take one input and reproduce it on both outputs.
+        Therefore the only fields they have are `<In1>`,`<Out1>`,and `<Out2>`,
+        although these can be named whatever the user wishes as long as the order
+        is maintained (input,first output, second output).
+        Splitter processes are defined this way:
+        
+            <process4>
+                <type>
+                    Splitter
+                </type>
+                <In1>
+                    myProcess/Out1
+                </In1>
+                <Out1>
+                    outputs/output3
+                </Out1>
+                <Out2>
+                </Out2>
+            </process4>
+        
+     *  Interfaces:
+        Interfaces are defined by the user to transform a 
+        signal from one model of computation into another 
+        model of computation.  The type of interface is defined
+        by the field `<Transform>`.  It accepts as valid text
+        all of the interfaces listed in the interfaces section of
+        [Supported Processes][Supported-Processes].
+        Interface processes are defined this way:
+        
+            <process6>
+                <type>
+                    Interface
+                </type>
+                <Transform>
+                    intSdown
+                </Transform>
+                <PartConst>
+                    3
+                </PartConst>
+                <OutFunc>
+                    return [(x[0] + 1)]
+                </OutFunc>
+                <In1>
+                </In1>
+                <Out1>
+                </Out1>
+            </process6>
+    
 [Supported-Processes]: SupportedProcesses.md
