@@ -5,6 +5,8 @@ import UntimedProcesses
 import Processes
 from Processes import Process
 
+## An exception thrown when the model is not executable.  Thrown either because 
+#  there's not enough input or because there's an unresolvable feedback loop).
 class CausalityException(Exception):
   pass
 
