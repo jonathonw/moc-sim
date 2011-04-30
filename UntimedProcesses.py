@@ -2,73 +2,82 @@
 import Processes
 
 '''
-Untimed processes - some of these processes are identical to their
-generic counterparts; others are simplified versions.
+Untimed processes
 '''
 
+## An untimed Mealy process.
 class MealyU(Processes.MealyProcess):
-  ''' Untimed Mealy process - same as generic Mealy '''
   pass
 
+## An untimed Zip process.
 class ZipU(Processes.ZipProcess):
-  ''' Untimed Zip process - same as generic Zip '''
   pass
 
+## An untimed Unzip process.
 class UnzipU(Processes.UnzipProcess):
-  ''' Untimed Unzip process - same as generic Unzip '''
   pass
 
+## An untimed Map process. Basically, a simplified untimed Mealy process.
 class MapU(MealyU):
-  ''' Untimed Map process - basically a simplified Untimed Mealy process '''
+  ## Instantiates a MapU process with an input partition constant and an output
+  #  function. The output of MapU is just a function of the input, as opposed
+  #  MealyU, where the output is a function of both the input and the state.
+  #
+  #  Each function should be specified as a string containing Python code (which
+  #  will be evaluated at runtime); parameters are w (the current state), and x 
+  #  (the input).  x will be a list containing the input partition for this 
+  #  execution of the process.
+  #
+  #  @param partitionConstant     The partition constant (c) for this process.
+  #  @param outputFunction        The output function (f) for this process.  Should
+  #                               return the process's output (as a list).
+  #  @param inputSignal           The input signal to this process.
+  #  @param outputSignal          The output signal from this process.
   def __init__(self, partitionConstant, outputFunction, inputSignal, outputSignal):
-    '''
-    Instantiates an MapU process with an input partition constant (c)
-    and an output function (f).
-
-    The input partition is constant, so we must pass "return c" as a partition
-    function to MealyU.
-
-    The output of MapU is just a function of the input, as opposed MealyU, where
-    the output is a function of both the input and the state. This is fine - MealyU
-    still works just fine without any state (w) arguments in its output function.
-
-    The untimed Map process is stateless, so we just pass a dummy function and
-    initial state to the generic mealy process.
-    '''
+    # The input partition is constant, so we must pass "return c" as a partition
+    # function to MealyU.
+    #
+    # The untimed Map process is stateless, so we just pass a dummy function and
+    # initial state to the generic mealy process.    
     partitionFunction = "return %s" % str(partitionConstant)
     nextStateFunction = "return 0"
     initialState = 0
     MealyU.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
 
+## An untimed Scan process.
 class ScanU(Processes.ScanProcess):
-  '''
-    Instantiates a ScanU process with an input partition function (gamma),
-    a next state function (g), and an initial state (w_0).
-  '''
   pass
-
-class ScandU(MealyU):
-  def __init__(self, partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal):
-    '''
-    Instantiates a ScanU process with an input partition function (gamma),
-    a next state function (g), and an initial state (w_0).
   
-    This is exactly the same as ScanU, except that the process outputs
-    its initial state before receiving/handling any input.
-    '''
+## An untimed ScandU process.  The same as ScanU, except that the process
+#  outputs its initial state before receiving or handling any input.
+class ScandU(MealyU):
+  ## Instantiates a ScandU process with a next state function and initial 
+  #  state.
+  #
+  #  Each function should be specified as a string containing Python code (which
+  #  will be evaluated at runtime); parameters are w (the current state), and x 
+  #  (the input).  x will be a list containing the input partition for this 
+  #  execution of the process.
+  #
+  #  @param partitionFunction The partition function (gamma) for this process.
+  #  @param nextStateFunction The next state function (g) for this process.
+  #                           Should return the next state (consistent with the
+  #                           type used for the initial state).
+  #  @param initialState      The initial state for the system.  Can be any
+  #                           type, but should be consistent with the type
+  #                           returned by nextStateFunction.
+  #  @param inputSignal       The input signal to this process.
+  #  @param outputSignal      The output signal from this process.
+  def __init__(self, partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal):
     outputFunction = "return [w]"
     MealyU.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
-    
+
+## An untimed Source process.
 class SourceU(Processes.SourceProcess):
-  '''
-	Untimed Source process - same as generic Source process.
-  '''
   pass
 
+## An untimed Init process.
 class InitU(Processes.InitProcess):
-  '''
-	Untimed InitU process - same as generic Source process.
-  '''
   pass
 
 def fireProcess(process):
