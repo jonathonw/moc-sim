@@ -32,7 +32,7 @@ class MealyProcess(Process):
   #
   #  @param partitionFunction The partition function (lambda) for this process.
   #                           Should return a positive integer corresponding to
-  #                           the number of elements in the parittion.
+  #                           the number of elements in the partition.
   #  @param outputFunction    The output function (f) for this process.  Should
   #                           return the process's output (as a list).
   #  @param nextStateFunction The next state function (g) for this process.
