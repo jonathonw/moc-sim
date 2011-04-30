@@ -3,8 +3,7 @@
 import Processes
 
 class MealyT(Processes.MealyProcess):
-  def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
-    Processes.MealyProcess.__init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
+  pass
 
 class ZipT(Processes.ZipProcess):
   pass
