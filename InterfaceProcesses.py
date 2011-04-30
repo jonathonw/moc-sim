@@ -5,104 +5,87 @@ import TimedProcesses
 import SynchronousProcesses
 import utilities
 
+''' 
+Removes timing information from a synchronous process such that an untimed process
+can use it.  
+'''
 class StripS2U(Processes.Process):
-  def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
+  def __init__(self, inputSignal, outputSignal):
 
-    self._partitionFunction = utilities.stringToFunction(partitionFunction, "w")
-    self._outputFunction = utilities.stringToFunction(outputFunction, "w, x")
-    self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w, x")
-    self._state = initialState
     self._inputSignal = inputSignal
     self._outputSignal = outputSignal
-    self._nextState = initialState
 	
   def preFire(self):
-    inputPartitionSize = self._partitionFunction(self._state)
+    inputPartitionSize = 1
     if len(self._inputSignal) >= inputPartitionSize:
       return True
     else:
       return False	
 	
-  def fire(self):
-    '''
-    Removes the time events
-    '''
-    
-    inputPartitionSize = self._partitionFunction(self._state)
+  def fire(self):    
+    inputPartitionSize = 1
     inputEvents = []
     for i in range(inputPartitionSize):
       singleEvent = self._inputSignal.pop(0)
       if(singleEvent!=None):
         inputEvents.append(singleEvent)
-    outputEvents = self._outputFunction(self._state, inputEvents)
-    self._nextState = self._nextStateFunction(self._state, inputEvents)
+    outputEvents = inputEvents
     self._outputSignal.extend(outputEvents)
 	
   def postFire(self):
-    self._state = self._nextState
+    pass
 		
-# removes the time information from a timed process
+''' 
+Removes timing information from a timed process such that an untimed process
+can use it.  
+'''
 class StripT2U(Processes.Process):
 
-  def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
+  def __init__(self, inputSignal, outputSignal):
 
-    self._partitionFunction = utilities.stringToFunction(partitionFunction, "w")
-    self._outputFunction = utilities.stringToFunction(outputFunction, "w, x")
-    self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w, x")
-    self._state = initialState
     self._inputSignal = inputSignal
     self._outputSignal = outputSignal
-    self._nextState = initialState
 	
   def preFire(self):
-    inputPartitionSize = self._partitionFunction(self._state)
+    inputPartitionSize = 1
     if len(self._inputSignal) >= inputPartitionSize:
       return True
     else:
       return False
   
   def fire(self):
-    '''
-    Removes the time events
-    '''
-    
-    inputPartitionSize = self._partitionFunction(self._state)
+    inputPartitionSize = 1
     inputEvents = []
     for i in range(inputPartitionSize):
       singleEvent = self._inputSignal.pop(0)
       if(singleEvent!=None):
         inputEvents.append(singleEvent)
-    outputEvents = self._outputFunction(self._state, inputEvents)
-    self._nextState = self._nextStateFunction(self._state, inputEvents)
+    outputEvents = inputEvents
     self._outputSignal.extend(outputEvents)
 	
   def postFire(self):
-    self._state = self._nextState
+    pass
 	
-class StripT2S(Processes.Process):#MealyT):
-  def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
+''' 
+Removes timing information from a timed process such that a synchronous process
+can use it.  
+'''
+class StripT2S(Processes.Process):
+  def __init__(self, r, inputSignal, outputSignal):
 
-    self._partitionFunction = utilities.stringToFunction(partitionFunction, "w")
-    self._outputFunction = utilities.stringToFunction(outputFunction, "w, x")
-    self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w, x")
-    self._state = initialState
-    self._inputSignal = inputSignal
-    self._outputSignal = outputSignal
-    self._nextState = initialState
+	self._r  = r
+	self._inputSignal = inputSignal
+	self._outputSignal = outputSignal
 	
   def preFire(self):
-    inputPartitionSize = self._partitionFunction(self._state)
+    inputPartitionSize = self._r
     if len(self._inputSignal) >= inputPartitionSize:
       return True
     else:
       return False
 	
   def fire(self):
-    '''
-    Removes the time events
-    '''
-    
-    inputPartitionSize = self._partitionFunction(self._state)
+    inputPartitionSize = self._r
     inputEvents = []
     for i in range(inputPartitionSize):
       singleEvent = self._inputSignal.pop(0)
@@ -112,125 +95,90 @@ class StripT2S(Processes.Process):#MealyT):
         if i==0:
           inputEvents[0]=None
           break
-    outputEvents = self._outputFunction(self._state, inputEvents)
-    self._nextState = self._nextStateFunction(self._state, inputEvents)
+    outputEvents = inputEvents
     self._outputSignal.extend(outputEvents)
  
   def postFire(self):
-    self._state = self._nextState
+    pass
   
 
 class InsertS2T(Processes.Process):
-  def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
+  def __init__(self, r, inputSignal, outputSignal):
 
-    self._partitionFunction = utilities.stringToFunction(partitionFunction, "w")
-    self._outputFunction = utilities.stringToFunction(outputFunction, "w, x")
-    self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w, x")
-    self._state = initialState
-    self._inputSignal = inputSignal
-    self._outputSignal = outputSignal
-    self._nextState = initialState
+	self._r = r
+	self._inputSignal = inputSignal
+	self._outputSignal = outputSignal
 
   def preFire(self):
-    inputPartitionSize = self._partitionFunction(self._state)
+    inputPartitionSize = 1
     if len(self._inputSignal) >= inputPartitionSize:
       return True
     else:
       return False
 	
   def fire(self):
-    '''
-    Adds the time events
-    '''
-    r = 2 #r is the positive constant that represents the number of output events to inject per event in the input
-    inputPartitionSize = self._partitionFunction(self._state)
+    inputPartitionSize = 1
     inputEvents = []
-    for i in range(inputPartitionSize-1):
-      singleEvent = self._inputSignal.pop(0)
-      if(singleEvent!=None):
-        for i in range(r):
-          inputEvents.append(singleEvent)
-    outputEvents = self._outputFunction(self._state, inputEvents)
-    self._nextState = self._nextStateFunction(self._state, inputEvents)
+    singleEvent = self._inputSignal.pop(0)
+    if(singleEvent!=None):
+      for i in range(self._r):
+        inputEvents.append(singleEvent)
+    outputEvents = inputEvents
     self._outputSignal.extend(outputEvents)
  
   def postFire(self):
-    self._state = self._nextState
+    pass
 		
 class InsertU2T(Processes.Process):
-  def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
-
-    self._partitionFunction = utilities.stringToFunction(partitionFunction, "w")
-    self._outputFunction = utilities.stringToFunction(outputFunction, "w, x")
-    self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w, x")
-    self._state = initialState
+  def __init__(self, r, inputSignal, outputSignal):
+    self._r = r
     self._inputSignal = inputSignal
     self._outputSignal = outputSignal
-    self._nextState = initialState
 
   def preFire(self):
-    inputPartitionSize = self._partitionFunction(self._state)
+    inputPartitionSize = 1
     if len(self._inputSignal) >= inputPartitionSize:
       return True
     else:
       return False
 	
   def fire(self):
-    '''
-    Adds the time events
-    '''
-    r = 2 #r is the positive constant that represents the number of output events to inject per event in the input
-    inputPartitionSize = self._partitionFunction(self._state)
     inputEvents = []
-    for i in range(inputPartitionSize-1):
-      singleEvent = self._inputSignal.pop(0)
-      if(singleEvent!=None):
-        for i in range(r):
-          inputEvents.append(singleEvent)
-    outputEvents = self._outputFunction(self._state, inputEvents)
-    self._nextState = self._nextStateFunction(self._state, inputEvents)
+    singleEvent = self._inputSignal.pop(0)
+    if(singleEvent!=None):
+      for i in range(self._r):
+        inputEvents.append(singleEvent)
+    outputEvents = inputEvents
     self._outputSignal.extend(outputEvents)
  
   def postFire(self):
-    self._state = self._nextState
+    pass
 		
 class InsertU2S(Processes.Process):
-  def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
-
-    self._partitionFunction = utilities.stringToFunction(partitionFunction, "w")
-    self._outputFunction = utilities.stringToFunction(outputFunction, "w, x")
-    self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w, x")
-    self._state = initialState
+  def __init__(self, r, inputSignal, outputSignal):
+    self._r = r
     self._inputSignal = inputSignal
     self._outputSignal = outputSignal
-    self._nextState = initialState
-
+	
   def preFire(self):
-    inputPartitionSize = self._partitionFunction(self._state)
+    inputPartitionSize = 1
     if len(self._inputSignal) >= inputPartitionSize:
       return True
     else:
       return False
 	
   def fire(self):
-    '''
-    Adds the time events
-    '''
-    r = 2 #r is the positive constant that represents the number of output events to inject per event in the input
-    inputPartitionSize = self._partitionFunction(self._state)
     inputEvents = []
-    for i in range(inputPartitionSize-1):
-      singleEvent = self._inputSignal.pop(0)
-      if(singleEvent!=None):
-        for i in range(r):
-          inputEvents.append(singleEvent)
-    outputEvents = self._outputFunction(self._state, inputEvents)
-    self._nextState = self._nextStateFunction(self._state, inputEvents)
+    singleEvent = self._inputSignal.pop(0)
+    if(singleEvent!=None):
+      for i in range(self._r):
+        inputEvents.append(singleEvent)
+    outputEvents = inputEvents
     self._outputSignal.extend(outputEvents)
- 
+
   def postFire(self):
-    self._state = self._nextState
- 
+    pass
+
 def fireProcess(process):
   if process.preFire():
     process.fire()
@@ -241,8 +189,15 @@ def fireProcess(process):
 def main():
   print "MealyT"
   partitionFunction = "return 3"
-  outputFunction = "return [(x[0] + x[2] + w)]"
-  '''outputFunction = "if x[0]+x[1]+x[2]+x[3]+x[4] > 500:\n\
+  #outputFunction = "return [(x[0] + x[2] + w)]"
+  outputFunction = "if x[0] == None:\n\
+  return [(x[2] +w)]\n\
+elif x[2] == None:\n\
+  return [(x[0] + w)]\n\
+else:\n\
+  return [(x[0] + x[2] + w)]"  
+  
+  '''if x[0]+x[1]+x[2]+x[3]+x[4] > 500:\n\
   return w-1\n\
 elif x[0]+x[1]+x[2]+x[3]+x[4] < 400:\n\
   return w+1\n\
@@ -251,32 +206,36 @@ else:\n\
   nextStateFunction = "return x[1]"
   initialState = 0
   
-  in_timed = [0,1,2,3,4,5,6,7,8]
-  out_timed = []
+  in_synchronous = [0,1,None,3,4,5,6,7,8]
+  out_synchronous = []
   
-  timedProcess = TimedProcesses.MealyT(partitionFunction, outputFunction, nextStateFunction, initialState, in_timed, out_timed)
+  synchronousProcess = TimedProcesses.MealyT(partitionFunction, outputFunction, nextStateFunction, initialState, in_synchronous, out_synchronous)
 
   outputFunction = "return [(x[0]+w)]"
   nextStateFunction = "return x[0]"
-  in_interface = out_timed
+  in_interface = out_synchronous
   out_interface = []
-  interface = StripT2S("return 1", outputFunction, nextStateFunction, initialState, in_interface,out_interface)
+  interface = InsertS2T(1, in_interface,out_interface)#outputFunction, nextStateFunction, initialState, in_interface,out_interface)
   
   outputFunction = "return [(x[0]+w)]"
   nextStateFunction = "return x[0]"
-  in_synchronous = out_interface
-  out_synchronous = []
-  synchronousProcess = SynchronousProcesses.MealyS(outputFunction, nextStateFunction, initialState, in_synchronous, out_synchronous)  
+  in_timed = out_interface
+  out_timed = []
+  timedProcess = SynchronousProcesses.MealyS(outputFunction, nextStateFunction, initialState, in_timed, out_timed)  
 
   for i in range(0,3):
     print "After step",i,":"
-    print "InputSignal:", in_timed
+    print "InputSignal:", in_synchronous
       
-    fireProcess(timedProcess)
-    fireProcess(interface)
+    #fireProcess(timedProcess)
     fireProcess(synchronousProcess)
-
-    print "OutputSignal:", out_synchronous
+    print in_interface
+    fireProcess(interface)
+    print out_interface
+	
+    #fireProcess(synchronousProcess)
+    fireProcess(timedProcess)
+    print "OutputSignal:", out_timed
   
   
   
