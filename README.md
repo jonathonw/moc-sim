@@ -115,18 +115,42 @@ These sections are created in the following way:
 
     Processes can be of these forms:
      *  Models of Computation (MoCs):
-        The processes are generated similarly to the inputs and outputs,
-        with the exception that they have many more fields within each process.
-        first two fields `<MoC>` and `<Type>`.  `<MoC>` accepts as valid text:
-        Untimed, Timed, and Synchronous (for each type of MoC).  `<Type>` accepts as valid
-        processes, all the processes listed in [Supported Processes][Supported-Processes]
-        Processes are defined this way:
+        For processes falling within MoCs, the first two fields are `<MoC>` and `<Type>`.  
+        `<MoC>` accepts as valid text: Untimed, Timed, and Synchronous (for each type of MoC).  
+        `<Type>` accepts as valid processes, all the processes listed in [Supported Processes][Supported-Processes].
+        The fields following `<MoC>` and `<Type>` are specific to each process and follow the order
+        of the *init* functions for each process. Again, the tags for the fields can be renamed by the user,
+        but their order must remain intact.
+        An example process is defined this way:
+        
+            <process1>
+                <MoC>
+                    Untimed
+                </MoC>
+                <Type>
+                    Zip
+                </Type>
+                <Count1>
+                    3
+                </Count1>
+                <Count2>
+                    3
+                </Count2>
+                <In1>
+                    inputs/input1
+                </In1>
+                <In2>
+                    process2/Out1
+                </In2>
+                <Out1>
+                </Out1>
+            </process1>
         
      *  Splitters:
         Splitters simply take one input and reproduce it on both outputs.
         Therefore the only fields they have are `<In1>`,`<Out1>`,and `<Out2>`,
         although these can be named whatever the user wishes as long as the order
-        is maintained (input,first output, second output).
+        is maintained (1:input,2:first output, 3:second output).
         Splitter processes are defined this way:
         
             <process4>
@@ -149,7 +173,10 @@ These sections are created in the following way:
         model of computation.  The type of interface is defined
         by the field `<Transform>`.  It accepts as valid text
         all of the interfaces listed in the interfaces section of
-        [Supported Processes][Supported-Processes].
+        [Supported Processes][Supported-Processes].  The `<PartConst>`
+        field accepts a number which is used as the partition constant
+        for the input signal.  The output function accepts any valid
+        formatted python function, as described above.
         Interface processes are defined this way:
         
             <process6>
