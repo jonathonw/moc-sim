@@ -1,4 +1,5 @@
 import Processes
+import InterfaceProcesses
 import UntimedProcesses
 import TimedProcesses
 import SynchronousProcesses
@@ -145,6 +146,68 @@ def parseXml(filename):
                   (out1,out2) = getOutputs(item,2,3)
                   process = Processes.Splitter(in1,out1,out2)
                   proc_list.append(process)
+              elif item[0].text=='Interface':
+                  print 'Creating Interface',
+                  if item[1].text=='StripS2U':
+                      print item[1].text
+                      in1 = getInputs(item,6)
+                      out1 = getOutputs(item,7)
+                      process = InterfaceProcesses.StripS2U(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
+                      proc_list.append(process)
+                  elif item[1].text=='StripT2U':
+                      print item[1].text
+                      in1 = getInputs(item,6)
+                      out1 = getOutputs(item,7)
+                      process = InterfaceProcesses.StripT2U(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
+                      proc_list.append(process)
+                  elif item[1].text=='StripT2S':
+                      print item[1].text
+                      in1 = getInputs(item,6)
+                      out1 = getOutputs(item,7)
+                      process = InterfaceProcesses.StripT2S(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
+                      proc_list.append(process)
+                  elif item[1].text=='InsertS2T':
+                      print item[1].text
+                      in1 = getInputs(item,6)
+                      out1 = getOutputs(item,7)
+                      process = InterfaceProcesses.InsertS2T(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
+                      proc_list.append(process)
+                  elif item[1].text=='InsertU2T':
+                      print item[1].text
+                      in1 = getInputs(item,6)
+                      out1 = getOutputs(item,7)
+                      process = InterfaceProcesses.InsertU2T(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
+                      proc_list.append(process)
+                  elif item[1].text=='InsertU2S':
+                      print item[1].text
+                      in1 = getInputs(item,6)
+                      out1 = getOutputs(item,7)
+                      process = InterfaceProcesses.InsertU2S(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
+                      proc_list.append(process)                      
+                  elif item[1].text=='intSup':
+                      print item[1].text
+                      in1 = getInputs(item,4)
+                      out1 = getOutputs(item,5)
+                      process = InterfaceProcesses.intSup(eval(item[2].text),item[3].text,in1,out1)
+                      proc_list.append(process)
+                  elif item[1].text=='intSdown':
+                      print item[1].text
+                      in1 = getInputs(item,4)
+                      out1 = getOutputs(item,5)
+                      process = InterfaceProcesses.intSdown(eval(item[2].text),item[3].text,in1,out1)
+                      proc_list.append(process)
+                  elif item[1].text=='intTup':
+                      print item[1].text
+                      in1 = getInputs(item,4)
+                      out1 = getOutputs(item,5)
+                      process = InterfaceProcesses.intTup(eval(item[2].text),item[3].text,in1,out1)
+                      proc_list.append(process)
+                  elif item[1].text=='intTdown':
+                      print item[1].text
+                      in1 = getInputs(item,4)
+                      out1 = getOutputs(item,5)
+                      process = InterfaceProcesses.intTdown(eval(item[2].text),item[3].text,in1,out1)
+                      proc_list.append(process)
               elif item[0].text=='Timed':
                   print 'Creating Timed',
                   if item[1].text=='Zip':
@@ -280,7 +343,7 @@ def parseXml(filename):
   
 def main():
   print "Parsing XML"
-  print parseXml("amplifier.xml")  
+  print parseXml("examples/sample.xml")  
   
 if __name__ == "__main__":
   main()

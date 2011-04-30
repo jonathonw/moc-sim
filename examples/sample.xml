@@ -97,5 +97,49 @@
 				outputs/output4
 			</Out2>
 		</process4>
+		<process5>
+			<type>
+				Interface
+			</type>
+			<Transform>
+				StripT2S
+			</Transform>
+			<PartFunc>
+				return 3
+			</PartFunc>
+			<OutFunc>
+				return [(x[0] + w)]
+			</OutFunc>
+			<StateFunc>
+				return x[0]
+			</StateFunc>
+			<InitState>
+				1
+			</InitState>
+			<In1>
+				process5/Out1
+			</In1>
+			<Out1>
+				outputs/output3
+			</Out1>
+		</process5>
+		<process6>
+			<type>
+				Interface
+			</type>
+			<Transform>
+				intSdown
+			</Transform>
+			<PartConst>
+				3
+			</PartConst>
+			<OutFunc>
+				return [(x[0] + 1)]
+			</OutFunc>
+			<In1>
+			</In1>
+			<Out1>
+			</Out1>
+		</process6>
 	</processes>
 </system>

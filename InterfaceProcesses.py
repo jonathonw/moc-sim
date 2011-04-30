@@ -82,9 +82,9 @@ class StripS2U(Processes.Process):
     inputPartitionSize = self._partitionFunction(self._state)
     inputEvents = []
     for i in range(inputPartitionSize):
-	  singleEvent = self._inputSignal.pop(0)
-	  if(singleEvent!=None):
-	    inputEvents.append(singleEvent)
+      singleEvent = self._inputSignal.pop(0)
+      if(singleEvent!=None):
+        inputEvents.append(singleEvent)
     outputEvents = self._outputFunction(self._state, inputEvents)
     self._nextState = self._nextStateFunction(self._state, inputEvents)
     self._outputSignal.extend(outputEvents)
@@ -120,9 +120,9 @@ class StripT2U(Processes.Process):
     inputPartitionSize = self._partitionFunction(self._state)
     inputEvents = []
     for i in range(inputPartitionSize):
-	  singleEvent = self._inputSignal.pop(0)
-	  if(singleEvent!=None):
-	    inputEvents.append(singleEvent)
+      singleEvent = self._inputSignal.pop(0)
+      if(singleEvent!=None):
+        inputEvents.append(singleEvent)
     outputEvents = self._outputFunction(self._state, inputEvents)
     self._nextState = self._nextStateFunction(self._state, inputEvents)
     self._outputSignal.extend(outputEvents)
@@ -156,13 +156,13 @@ class StripT2S(Processes.Process):#MealyT):
     inputPartitionSize = self._partitionFunction(self._state)
     inputEvents = []
     for i in range(inputPartitionSize):
-	  singleEvent = self._inputSignal.pop(0)
-	  if(singleEvent!=None):
-	    inputEvents.append(singleEvent)
-	  elif(singleEvent==None):
-		if i==0:
-			inputEvents[0]=None
-		break
+      singleEvent = self._inputSignal.pop(0)
+      if(singleEvent!=None):
+        inputEvents.append(singleEvent)
+      elif(singleEvent==None):
+        if i==0:
+          inputEvents[0]=None
+          break
     outputEvents = self._outputFunction(self._state, inputEvents)
     self._nextState = self._nextStateFunction(self._state, inputEvents)
     self._outputSignal.extend(outputEvents)
@@ -197,10 +197,10 @@ class InsertS2T(Processes.Process):
     inputPartitionSize = self._partitionFunction(self._state)
     inputEvents = []
     for i in range(inputPartitionSize-1):
-	  singleEvent = self._inputSignal.pop(0)
-	  if(singleEvent!=None):
-	    for i in range(r):
-	      inputEvents.append(singleEvent)
+      singleEvent = self._inputSignal.pop(0)
+      if(singleEvent!=None):
+        for i in range(r):
+          inputEvents.append(singleEvent)
     outputEvents = self._outputFunction(self._state, inputEvents)
     self._nextState = self._nextStateFunction(self._state, inputEvents)
     self._outputSignal.extend(outputEvents)
@@ -234,10 +234,10 @@ class InsertU2T(Processes.Process):
     inputPartitionSize = self._partitionFunction(self._state)
     inputEvents = []
     for i in range(inputPartitionSize-1):
-	  singleEvent = self._inputSignal.pop(0)
-	  if(singleEvent!=None):
-	    for i in range(r):
-	      inputEvents.append(singleEvent)
+      singleEvent = self._inputSignal.pop(0)
+      if(singleEvent!=None):
+        for i in range(r):
+          inputEvents.append(singleEvent)
     outputEvents = self._outputFunction(self._state, inputEvents)
     self._nextState = self._nextStateFunction(self._state, inputEvents)
     self._outputSignal.extend(outputEvents)
@@ -271,10 +271,10 @@ class InsertU2S(Processes.Process):
     inputPartitionSize = self._partitionFunction(self._state)
     inputEvents = []
     for i in range(inputPartitionSize-1):
-	  singleEvent = self._inputSignal.pop(0)
-	  if(singleEvent!=None):
-	    for i in range(r):
-	      inputEvents.append(singleEvent)
+      singleEvent = self._inputSignal.pop(0)
+      if(singleEvent!=None):
+        for i in range(r):
+          inputEvents.append(singleEvent)
     outputEvents = self._outputFunction(self._state, inputEvents)
     self._nextState = self._nextStateFunction(self._state, inputEvents)
     self._outputSignal.extend(outputEvents)
