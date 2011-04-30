@@ -2,46 +2,48 @@
 import utilities
 
 class Process:
+  ## Evaluates the partition function and decides if the input signal(s) have
+  #  enough input for this process to run.
+  #
+  #  @return True if there is enough input; False if there is not.
   def preFire(self):
-    '''
-    Evaluates the partition function and decides if the input signal(s) have
-    enough input for this process to run.  Returns True if there is enough
-    input; returns False if there is not.
-    '''
     return False
     
+  ## Takes input, runs the output function, and puts the output in the output
+  #  signals.  Should compute but does not \em update the next state.
   def fire(self):
-    '''
-    Takes input, runs the output function, and puts the output in the output
-    signals.  Should compute but does not *update* the next state.
-    '''
     pass
   
+  ## Updates the state of the process.  Typically, the state would be computed
+  #  in the fire() method, then the state member variable would be updated in
+  #  this method.
   def postFire(self):
-    '''
-    Updates the state of the process (typically, the state would be computed in
-    the fire() method; then the actual state member variable would be updated
-    in this method).
-    '''
     pass
 
+## A generic Mealy process.
 class MealyProcess(Process):
-  '''A generic Mealy process.'''
+  ## Instantiates a Mealy state machine with a partition function, output
+  #  function, next state function, and initial state.
+  #
+  #  Each function should be specified as a string containing Python code (which
+  #  will be evaluated at runtime); parameters are w (the current state), and x 
+  #  (the input).  x will be a list containing the input partition for this 
+  #  execution of the process.
+  #
+  #  @param partitionFunction The partition function (lambda) for this process.
+  #                           Should return a positive integer corresponding to
+  #                           the number of elements in the parittion.
+  #  @param outputFunction    The output function (f) for this process.  Should
+  #                           return the process's output (as a list).
+  #  @param nextStateFunction The next state function (g) for this process.
+  #                           Should return the next state (consistent with the
+  #                           type used for the initial state).
+  #  @param initialState      The initial state for the system.  Can be any
+  #                           type, but should be consistent with the type
+  #                           returned by nextStateFunction.
+  #  @param inputSignal       The input signal to this process.
+  #  @param outputSignal      The output signal from this process.
   def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
-    '''
-    Instantiates a Mealy state machine with a partition function (lambda), 
-    output function (f), next state function (g), and initial state (w_0).
-    
-    Each function should be specified as a string (which will be evaluated at
-    runtime); parameters are w (the current state), and x (the input).  x will
-    be a list containing the input partition for this execution of the process.
-    
-    partitionFunction should return an positive integer corresponding to the
-    number of elements in the partition, outputFunction should return the output
-    (as a list), and nextStateFunction should return the initial state.
-    
-    nextStateFunction and initialState should use consistent types for states.
-    '''
     self._partitionFunction = utilities.stringToFunction(partitionFunction, "w")
     self._outputFunction = utilities.stringToFunction(outputFunction, "w, x")
     self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w, x")
@@ -58,12 +60,6 @@ class MealyProcess(Process):
       return False
     
   def fire(self):
-    '''
-    Runs this Mealy process for one step.
-    
-    TODO:  figure out how the process gets its input and output.
-    '''
-    
     inputPartitionSize = self._partitionFunction(self._state)
     inputEvents = []
     for i in range(inputPartitionSize):
@@ -75,7 +71,27 @@ class MealyProcess(Process):
   def postFire(self):
     self._state = self._nextState
     
+## A generic scan process.
 class ScanProcess(Process):
+  ## Instantiates a Scan process with a partition function, next state function,
+  #  and initial state.
+  #
+  #  As with a Mealy process, each function should be specified as a string
+  #  containing Python code to be evaluated at runtime.  Parameters to these
+  #  functions are w (the current state), and x (the current input).  x will be
+  #  a list containing the input partition for this execution of the process.
+  #
+  #  @param partitionFunction The partition function (lambda) for this process.
+  #                           Should return a positive integer corresponding to
+  #                           the number of elements in the parittion.
+  #  @param nextStateFunction The next state function (g) for this process.
+  #                           Should return the next state (consistent with the
+  #                           type used for the initial state).
+  #  @param initialState      The initial state for the system.  Can be any
+  #                           type, but should be consistent with the type
+  #                           returned by nextStateFunction.
+  #  @param inputSignal       The input signal to this process.
+  #  @param outputSignal      The output signal from this process.
   def __init__(self, partitionFunction, nextStateFunction, initialState, inputSignal, outputSignal):
     self._partitionFunction = utilities.stringToFunction(partitionFunction, "w")
     self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w, x")
@@ -102,7 +118,21 @@ class ScanProcess(Process):
   def postFire(self):
     self._state = self._nextState
     
+## A Zip process (actually, equivalent to ZipUS from the text).
 class ZipProcess(Process):
+  ## Instantiates a zip process which takes in the specified number of events
+  #  from each signal.  The output signal will be composed of pairs of lists
+  #  of events, so if the inputs of this process were [1, 2, 3] and [4, 5, 6],
+  #  and you took two from each, the result of the first execution would be 
+  #  ([1,2], [4, 5]).
+  #  
+  #  @param signal1Count the number of events to take in from Signal 1 on each
+  #                      execution of this process.
+  #  @param signal2Count the number of events to take in from Signal 2 on each
+  #                      execution of this process.
+  #  @param inputSignal1 The first input signal to this process.
+  #  @param inputSignal2 The second input signal to this process.
+  #  @param outputSignal The output signal from this process                 
   def __init__(self, signal1Count, signal2Count, inputSignal1, inputSignal2, outputSignal):
     self._signal1Count = signal1Count
     self._signal2Count = signal2Count
