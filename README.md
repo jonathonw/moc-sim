@@ -53,6 +53,18 @@ where sample.xml is the XML file containing the model to be simulated.
 
 [python-path]: http://docs.python.org/using/windows.html#excursus-setting-environment-variables
 
+Restrictions for System Creation
+--------------------------------
+ *  User must explicitly specify the interfaces between different MoCs.
+ *  User must explicitly specify a splitter process for a signal that is
+    consumed by multiple processes. (Note: Splitter processes cannot connect
+    to a global input, else the system will fail)
+ *  Process functions must be valid python code.
+ *  No syntactical verification for the input file.
+ *  Doesn't implent the full fix-point solution algorithm,
+    require a delay for feedback loop solution.
+
+[python-path]: http://docs.python.org/using/windows.html#excursus-setting-environment-variables
 
 Creating a Model of a System in XML
 -----------------------------------
