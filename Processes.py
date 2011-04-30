@@ -71,7 +71,7 @@ class MealyProcess(Process):
   def postFire(self):
     self._state = self._nextState
     
-## A generic scan process.
+## A generic Scan process.
 class ScanProcess(Process):
   ## Instantiates a Scan process with a partition function, next state function,
   #  and initial state.
@@ -118,7 +118,7 @@ class ScanProcess(Process):
   def postFire(self):
     self._state = self._nextState
     
-## A Zip process (actually, equivalent to ZipUS from the text).
+## A generic Zip process (actually, equivalent to ZipUS from the text).
 class ZipProcess(Process):
   ## Instantiates a zip process which takes in the specified number of events
   #  from each signal.  The output signal will be composed of pairs of lists
@@ -159,7 +159,14 @@ class ZipProcess(Process):
   def postFire(self):
     pass
     
+## A generic Unzip process.
 class UnzipProcess(Process):
+  ## Instantiates an Unzip process.  The input signal should be composed of
+  #  pairs of lists of events (like the output from ZipProcess).
+  #
+  #  @param inputSignal   The input signal to this process.
+  #  @param outputSignal1 The first output signal from this process.
+  #  @param outputSignal2 The second output signal from this process.
   def __init__(self, inputSignal, outputSignal1, outputSignal2):
     self._inputSignal = inputSignal
     self._outputSignal1 = outputSignal1
@@ -179,11 +186,18 @@ class UnzipProcess(Process):
   def postFire(self):
     pass
 
+## A generic Source process.
 class SourceProcess(Process):
-  '''
-  TODO: implement this - MealyProcess needs an input signal to
-  function and has no way of modifying the input signal.
-  '''
+  ## Instantiates a Source process with the given next state function.  A Source
+  #  process always outputs its current state.
+  #
+  #  @param nextStateFunction The next state function (g) for this process.
+  #                           Should return the next state (consistent with the
+  #                           type used for the initial state).
+  #  @param intialState       The initial state for the system.  Can be any
+  #                           type, but should be consistent with the type
+  #                           returned by nextStateFunction.
+  #  @param inputSignal       The input signal to this process.
   def __init__(self, nextStateFunction, initialState, outputSignal):
     self._nextStateFunction = utilities.stringToFunction(nextStateFunction, "w")
     self._state = initialState
@@ -200,7 +214,16 @@ class SourceProcess(Process):
   def postFire(self):
     self._state = self._nextState
 
+## A generic Init process.
 class InitProcess(MealyProcess):
+  ## Instantiates an Init process with the given initial value.  Outputs
+  #  initialValue on its first execution, outputs its input on all subsequent
+  #  iterations.
+  #
+  #  @param initialValue The value to output on the first execution of this
+  #                      process.
+  #  @param inputSignal  The input signal to this process.
+  #  @param outputSignal The output signal from this process.
   def __init__(self, initialValue, inputSignal, outputSignal):
     partitionFunction = "if w == False:\n\
   return 1\n\
@@ -214,12 +237,15 @@ else:\n\
     initialState = True
     MealyProcess.__init__(self, partitionFunction, outputFunction, nextState, initialState, inputSignal, outputSignal)
     
+## A signal splitting process.  Takes everything that comes in on one signal and
+#  outputs it on two signals--  this lets you use the same signal as an output
+#  signal and as input to another process.
 class Splitter:
-  '''
-  A "meta-process" outside the models of computation which acts as a simple
-  signal splitter--  takes everything that comes in on one signal and outputs
-  it on two signals.
-  '''
+  ## Instantiates a splitter process.
+  #  
+  #  @param inputSignal   The input signal to this process.
+  #  @param outputSignal1 The first output signal from this process.
+  #  @param outputSignal2 The second output signal from this process.
   def __init__(self, inputSignal, outputSignal1, outputSignal2):
     self._inputSignal = inputSignal
     self._outputSignal1 = outputSignal1
