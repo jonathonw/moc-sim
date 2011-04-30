@@ -12,26 +12,19 @@ outputs = {}
 signals = {}
 proc_list = []      #list of processes (which will be sent to the scheduler
 
-def search_signals(_sigs,_tst):
-    '''
-    Returns the index into _sigs if _tst is found
-        -1 otherwise
-    '''
-    for _ind in range(0,len(_sigs)):
-        if _sigs[_ind]==_tst:
-            return _ind
-    return -1
-
-def convertType(s):
-    for func in (int, float, eval):
-        try:
-            n = func(s)
-            return n
-        except:
-            pass
-    return s
-
 def getInputs(item,ind1,ind2=None):
+    '''
+    Checks the inputs dictionary for the specified input signal.
+    The input signal is specified by the text in the item at the
+    specific indexes.
+    If it is not found, proceeds to check the signals dictionary
+    for the specified input signal.
+    If the input signal is not found in either dictionary,
+    it creates an empty signal and appends it to the internal
+    signals dictionary using the text as the name.
+    
+    Returns the created input signals
+    '''
     if item[ind1].text in inputs:
       in1 = inputs[item[ind1].text]
     elif item[ind1].text in signals:
@@ -53,6 +46,19 @@ def getInputs(item,ind1,ind2=None):
     return (in1,in2)
 
 def getOutputs(item,ind1,ind2=None):
+    '''
+    Checks the outputs dictionary for the specified output signal.
+    The output signal is specified by the text in the item at the
+    specific indexes.
+    If it is not found, it checks to see if the text is an empty
+    string, at which point it checks the signals for the tag
+    (and either creates or assignes based on the result of that check)
+    If there is text in the field, it checks to see if the text is
+    already in the signal dictionary, at which point it either assigns
+    or creats the signal based on the result of the comparison.
+    
+    Returns the created output signals.
+    '''
     if item[ind1].text in outputs:
       out1 = outputs[item[ind1].text]
     elif item[ind1].text=='':
@@ -93,9 +99,14 @@ def parseXml(filename):
       for item in obj:
           for field in item:
               if field.tag!='StateFunc' and field.tag!='OutFunc' and field.tag!='PartFunc':
+                  '''
+                  Do not want to remove the newlines, tabs, or spaces from the functions
+                  as those are needed by the python function generator for syntactical
+                  verification.
+                  '''
                   field.text = field.text.replace('\n','')    # remove all the extra newlines
                   field.text = field.text.replace('\t','')    # remove all the extra tabs
-                  field.text = field.text.replace(' ','')
+                  field.text = field.text.replace(' ','')     # remove all the extra spaces
   '''
   The code below prints out the tree,
   use it for debugging
@@ -122,7 +133,6 @@ def parseXml(filename):
                       signal.append(None)
                   else:
                       signal.append(float(val))
-              #print signal
       elif obj.tag=='outputs':
           for item in obj:
               signal = []
@@ -135,9 +145,8 @@ def parseXml(filename):
                   (out1,out2) = getOutputs(item,2,3)
                   process = Processes.Splitter(in1,out1,out2)
                   proc_list.append(process)
-                  print proc_list
               elif item[0].text=='Timed':
-                  print 'Creating Timed '
+                  print 'Creating Timed',
                   if item[1].text=='Zip':
                       print item[1].text
                       (in1,in2) = getInputs(item,4,5)
@@ -168,7 +177,7 @@ def parseXml(filename):
                       process = TimedProcesses.InitT(eval(item[2].text),in1,out1)
                       proc_list.append(process)
               elif item[0].text=='Untimed':
-                  print 'Creating Untimed '
+                  print 'Creating Untimed',
                   if item[1].text=='Zip':
                       print item[1].text
                       (in1,in2) = getInputs(item,4,5)
@@ -217,7 +226,7 @@ def parseXml(filename):
                       process = UntimedProcesses.InitU(eval(item[2].text),in1,out1)
                       proc_list.append(process)
               elif item[0].text=='Synchronous':
-                  print 'Creating Synchronous '
+                  print 'Creating Synchronous',
                   if item[1].text=='Zip':
                       print item[1].text
                       (in1,in2) = getInputs(item,2,3)
@@ -265,25 +274,7 @@ def parseXml(filename):
                       out1 = getOutputs(item,4)
                       process = SynchronousProcesses.InitS(eval(item[2].text),in1,out1)
                       proc_list.append(process)
-  #everything above this point is code for use in the actual parser
-  '''
-  function = utilities.stringToFunction(system[2][2][2].text, "w, x")
-  x = [1, 2, 3]
-  y=function(eval(system[2][2][4].text),x)
-  print y
-  print x[0]
-  print function(1,x)
-  state = system[2][2][5].text
-  print state
-  signal = system[2][2][6].text
-  siglist = []
-  siglist = signal.split('/')
-  print siglist
-  print inputs
-  print outputs
-  print signals
-  print proc_list
-  '''
+
   #print signals
   return (inputs,outputs,proc_list)
   
