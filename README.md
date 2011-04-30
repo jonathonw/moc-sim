@@ -199,4 +199,4 @@ These sections are created in the following way:
                 </Out1>
             </process6>
     
-[Supported-Processes]: SupportedProcesses.md
+[Supported-Processes]: https://github.com/jonathonw/moc-sim/blob/master/SupportedProcesses.md
