@@ -174,33 +174,33 @@ def parseXml(filename):
                   print 'Creating Interface',
                   if item[1].text=='StripS2U':
                       print item[1].text
-                      in1 = getInputs(item,6)
-                      out1 = getOutputs(item,7)
-                      process = InterfaceProcesses.StripS2U(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
+                      in1 = getInputs(item,2)
+                      out1 = getOutputs(item,3)
+                      process = InterfaceProcesses.StripS2U(in1,out1)
                       proc_list.append(process)
                   elif item[1].text=='StripT2U':
                       print item[1].text
-                      in1 = getInputs(item,6)
-                      out1 = getOutputs(item,7)
-                      process = InterfaceProcesses.StripT2U(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
+                      in1 = getInputs(item,2)
+                      out1 = getOutputs(item,3)
+                      process = InterfaceProcesses.StripT2U(in1,out1)
                       proc_list.append(process)
                   elif item[1].text=='StripT2S':
                       print item[1].text
-                      in1 = getInputs(item,6)
-                      out1 = getOutputs(item,7)
-                      process = InterfaceProcesses.StripT2S(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
+                      in1 = getInputs(item,3)
+                      out1 = getOutputs(item,4)
+                      process = InterfaceProcesses.StripT2S(eval(item[2].text),in1,out1)
                       proc_list.append(process)
                   elif item[1].text=='InsertS2T':
                       print item[1].text
-                      in1 = getInputs(item,6)
-                      out1 = getOutputs(item,7)
-                      process = InterfaceProcesses.InsertS2T(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
+                      in1 = getInputs(item,3)
+                      out1 = getOutputs(item,4)
+                      process = InterfaceProcesses.InsertS2T(eval(item[2].text),in1,out1)
                       proc_list.append(process)
                   elif item[1].text=='InsertU2T':
                       print item[1].text
-                      in1 = getInputs(item,6)
-                      out1 = getOutputs(item,7)
-                      process = InterfaceProcesses.InsertU2T(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
+                      in1 = getInputs(item,3)
+                      out1 = getOutputs(item,4)
+                      process = InterfaceProcesses.InsertU2T(eval(item[2].text),in1,out1)
                       proc_list.append(process)
                   elif item[1].text=='InsertU2S':
                       print item[1].text
