@@ -4,51 +4,6 @@ import UntimedProcesses
 import TimedProcesses
 import SynchronousProcesses
 import utilities
-	
-class intSup(Processes.Process):#UntimedProcesses.MapU):  
-
-  def __init__(self, partitionConstant, outputFunction, inputSignal, outputSignal):
-    UntimedProcesses.MapU("return 1", outputFunction, inputSignal, outputSignal)
-	
-  #def preFire(self):
-  
-  #def fire(self):
-  
-  #def postFire(self):
-  
-
-class intSdown(Processes.Process):#UntimedProcesses.MapU):  
-
-  def __init__(self, partitionConstant, outputFunction, inputSignal, outputSignal):
-    UntimedProcesses.MapU(partitionConstant, outputFunction, inputSignal, outputSignal)
-
-class intTup(Processes.Process):#UntimedProcesses.MapU):
-
-  def __init__(self, partitionConstant, outputFunction, inputSignal, outputSignal):
-    UntimedProcesses.MapU("return 1", outputFunction, inputSignal, outputSignal)
-	
-  #def preFire(self):
-    
-  #def fire(self):
-  
-  #def postFire(self):
-	
-class intTdown(UntimedProcesses.MapU):
-
-  def __init__(self, partitionConstant, outputFunction, inputSignal, outputSignal):
-    UntimedProcesses.MapU(partitionConstant, outputFunction, inputSignal, outputSignal)
-
- # connects two MoC domains in the case that they are not a simple multiple of each other
-#class intSups(UntimedProcesses.MealyU):
-  #def __init__(self, partitionConstant, outputFunction, inputSignal, outputSignal):
-  
-  
-  
-  
-  
-  
-  
-  
 
 class StripS2U(Processes.Process):
   def __init__(self, partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal):
