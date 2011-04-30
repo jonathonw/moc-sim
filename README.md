@@ -119,7 +119,8 @@ These sections are created in the following way:
         `<MoC>` accepts as valid text: Untimed, Timed, and Synchronous (for each type of MoC).  
         `<Type>` accepts as valid processes, all the processes listed in [Supported Processes][Supported-Processes].
         The fields following `<MoC>` and `<Type>` are specific to each process and follow the order
-        of the *init* functions for each process. Again, the tags for the fields can be renamed by the user,
+        of the *init* functions for each process. This order is reproduced in [Supported Processes][Supported-Processes]
+        after each respective supported process. Again, the tags for the fields can be renamed by the user,
         but their order must remain intact.
         An example process is defined this way:
         
