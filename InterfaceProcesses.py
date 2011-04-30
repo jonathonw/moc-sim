@@ -239,8 +239,6 @@ def fireProcess(process):
     print "Precondition not met" 
 		
 def main():
-  #timedProcess = Processes.TimedProcesses
-  #untimedProcess = Process.UntimedProcesses
   print "MealyT"
   partitionFunction = "return 3"
   outputFunction = "return [(x[0] + x[2] + w)]"
@@ -253,40 +251,32 @@ else:\n\
   nextStateFunction = "return x[1]"
   initialState = 0
   
-  inputSignal = [0,1,2,3,4,5,6,7,8]
-  outputSignal = []
+  in_timed = [0,1,2,3,4,5,6,7,8]
+  out_timed = []
   
-  timedProcess = TimedProcesses.MealyT(partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
-  print "InputSignal:", inputSignal
-  fireProcess(timedProcess)
-  fireProcess(timedProcess)
-  fireProcess(timedProcess)
+  timedProcess = TimedProcesses.MealyT(partitionFunction, outputFunction, nextStateFunction, initialState, in_timed, out_timed)
 
-  print "OutputSignal:", outputSignal
+  outputFunction = "return [(x[0]+w)]"
+  nextStateFunction = "return x[0]"
+  in_interface = out_timed
+  out_interface = []
+  interface = StripT2S("return 1", outputFunction, nextStateFunction, initialState, in_interface,out_interface)
   
-  #untimedProcess = UntimedProcesses.MealyU(partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
-  synchronousProcess = SynchronousProcesses.MealyS(outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
-  
-  inputSignal = outputSignal
-  outputSignal = []
-  interface = StripT2S(partitionFunction, outputFunction, nextStateFunction, initialState, inputSignal, outputSignal)
-  
-  
-  print "InputSignal:", inputSignal
-  fireProcess(interface)
-  print "OutputSignal:", outputSignal
-  
-  
-  
-  
-  #print "InputSignal:", inputSignal
-  #fireProcess(untimedProcess)
-  #fireProcess(untimedProcess)
-  #fireProcess(untimedProcess)
-  #print "OutputSignal:", outputSignal
-  
-  
-  
+  outputFunction = "return [(x[0]+w)]"
+  nextStateFunction = "return x[0]"
+  in_synchronous = out_interface
+  out_synchronous = []
+  synchronousProcess = SynchronousProcesses.MealyS(outputFunction, nextStateFunction, initialState, in_synchronous, out_synchronous)  
+
+  for i in range(0,3):
+    print "After step",i,":"
+    print "InputSignal:", in_timed
+      
+    fireProcess(timedProcess)
+    fireProcess(interface)
+    fireProcess(synchronousProcess)
+
+    print "OutputSignal:", out_synchronous
   
   
   
