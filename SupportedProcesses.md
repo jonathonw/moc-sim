@@ -2,7 +2,7 @@ Supported Processes
 =======
 Valid Process Declarations for the XML parser
 
-Umtimed MoC:
+Untimed MoC:
 -------------------
  *  Mealy 
  
