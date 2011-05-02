@@ -221,10 +221,11 @@ def fireProcess(process):
     print "Precondition not met" 
 		
 def main():
-  print "MealyT"
   partitionFunction = "return 3"
 
-  outputFunction = "if x[0] == None:\n\
+  outputFunction = "if (x[0] == None and x[2] == None):\n\
+  return [w]\n\
+elif x[0] == None:\n\
   return [(x[2] +w)]\n\
 elif x[2] == None:\n\
   return [(x[0] + w)]\n\
@@ -269,7 +270,9 @@ else:\n\
   in_timed = [0,1,None,3,4,5,6,7,8]
   out_timed = []
   partitionFunction = "return 3"
-  outputFunction = "if x[0] == None:\n\
+  outputFunction = "if (x[0] == None and x[2] == None):\n\
+  return [w]\n\
+elif x[0] == None:\n\
   return [(x[2] +w)]\n\
 elif x[2] == None:\n\
   return [(x[0] + w)]\n\
@@ -310,7 +313,9 @@ else:\n\
   in_untimed = [0,1,None,3,4,5,6,7,8]
   out_untimed = []
   partitionFunction = "return 3"
-  outputFunction = "if x[0] == None:\n\
+  outputFunction = "if (x[0] == None and x[2] == None):\n\
+  return [w]\n\
+elif x[0] == None:\n\
   return [(x[2] +w)]\n\
 elif x[2] == None:\n\
   return [(x[0] + w)]\n\
@@ -351,7 +356,9 @@ else:\n\
   in_untimed = [0,1,None,3,4,5,6,7,8]
   out_untimed = []
   partitionFunction = "return 3"
-  outputFunction = "if x[0] == None:\n\
+  outputFunction = "if (x[0] == None and x[2] == None):\n\
+  return [w]\n\
+elif x[0] == None:\n\
   return [(x[2] +w)]\n\
 elif x[2] == None:\n\
   return [(x[0] + w)]\n\
