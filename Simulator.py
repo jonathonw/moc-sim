@@ -12,7 +12,7 @@ def main():
   print "Models of computation simulator"
   if len(sys.argv) != 2:
     print "Usage:", sys.argv[0], "input-file"
-    exit -1
+    exit(-1)
   
   inputFile = sys.argv[1]
   print "Parsing input..."

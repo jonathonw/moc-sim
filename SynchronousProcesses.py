@@ -49,6 +49,8 @@ class MapS(MealyS):
 
 ## Synchronous Scan process.
 class ScanS(Processes.ScanProcess):
+  def __init__(self, nextStateFunction, initialState, inputSignal, outputSignal):
+    Processes.ScanProcess.__init__(self, "return 1", nextStateFunction, initialState, inputSignal, outputSignal)
   pass
 
 ## Synchronous ScandS process.  The same as ScanS, except that the process
