@@ -152,7 +152,6 @@ def parseXml(filename):
               temp = item.text
               temp = temp.replace('\n','')
               temp = temp.replace('\t','')
-              temp = temp.replace(' ','')
               data = temp.split(',')
               for val in data:
                   if val=='Absent':
