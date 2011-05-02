@@ -204,9 +204,9 @@ def parseXml(filename):
                       proc_list.append(process)
                   elif item[1].text=='InsertU2S':
                       print item[1].text
-                      in1 = getInputs(item,6)
-                      out1 = getOutputs(item,7)
-                      process = InterfaceProcesses.InsertU2S(item[2].text,item[3].text,item[4].text,eval(item[5].text),in1,out1)
+                      in1 = getInputs(item,3)
+                      out1 = getOutputs(item,4)
+                      process = InterfaceProcesses.InsertU2S(eval(item[2].text),in1,out1)
                       proc_list.append(process)  
               elif item[0].text=='Timed':
                   print 'Creating Timed',
