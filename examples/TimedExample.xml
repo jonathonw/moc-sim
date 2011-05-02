@@ -43,11 +43,20 @@
 				return 1
 			</PartFunc>
 			<OutFunc>
-				return [(x[0][0][0] + w)]
+if x[0][0][0]!=None:
+  return [(x[0][0][0] + w)]
+else:
+  return [(w)]
 			</OutFunc>
 			<StateFunc>
-				return x[0][1][0]
+if x[0][1][0]!=None:
+  return x[0][1][0]
+else:
+  return 0
 			</StateFunc>
+			<InitialState>
+				1
+			</InitialState>
 			<In1>
 				processZip/Out1
 			</In1>
