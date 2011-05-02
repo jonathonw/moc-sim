@@ -134,8 +134,9 @@ These sections are created in the following way:
         of the *init* functions for each process. This order is reproduced in [Supported Processes][Supported-Processes]
         after each respective supported process. Again, the tags for the fields can be renamed by the user,
         but their order must remain intact.  For functions that are to be supplied by the user (such as
-        `<PartFunc>`,`<StateFunc>`, or `<OutputFunc>`), the functions must be valid python functions, with correct
-        python indentation.
+        `<PartFunc>`, `<OutFunc>`, or `<StateFunc>`), the functions must be valid python functions, with correct
+        python indentation.  These three fields (`<PartFunc>`, `<OutFunc>`, or `<StateFunc>`) cannot have their names changed.
+		They must go by these tags and must be in the correct order: PartFunc, OutFunc, then StateFunc.
         An example process is defined this way:
         
             <process1>
@@ -185,7 +186,8 @@ These sections are created in the following way:
      *  Interfaces:
         Interfaces are defined by the user to transform a 
         signal from one model of computation into another 
-        model of computation.  The type of interface is defined
+        model of computation.  Interface must be specified as the
+		`<type>` of the prcoess.  The specific interface is defined
         by the field `<Transform>`.  It accepts as valid text
         all of the interfaces listed in the interfaces section of
         [Supported Processes][Supported-Processes].  The `<PartConst>`

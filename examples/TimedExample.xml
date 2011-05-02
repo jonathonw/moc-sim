@@ -1,5 +1,11 @@
 <?xml version='1.0' ?>
 <!--
+	This example is a Timed MoC system example with feedback.
+	There is one global input (HiGabor) and one global output
+	(ByeGabor).  HiGabor is zipped together with the ouput of 
+	an Init process.  The zipped signal is input into a Mealy 
+	Process.  The Mealy process outputs to the global output
+	and to the Init process through a Splitter process.
 	-->
 <system>
 	<inputs>
@@ -44,12 +50,24 @@
 			<PartFunc>
 				return 1
 			</PartFunc>
+			<!-- 
+				The Output function:
+				Returns the first input added with the 
+				current state, if the input is not
+				an absent event.  Otherwise it returns 
+				the current state.
+			-->
 			<OutFunc>
 if x[0][0][0]!=None:
   return [(x[0][0][0] + w)]
 else:
   return [(w)]
 			</OutFunc>
+			<!-- 
+				The Next State function:
+				Returns the second input, if the input is not
+				an absent event.  Otherwise it returns 0.
+			-->
 			<StateFunc>
 if x[0][1][0]!=None:
   return x[0][1][0]
