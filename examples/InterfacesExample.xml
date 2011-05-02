@@ -1,0 +1,140 @@
+<?xml version='1.0' ?>
+<system>
+  <inputs>
+    <input1>
+      0,Absent,1,Absent,2,Absent,3,Absent,4,Absent,5,Absent
+    </input1>
+  </inputs>
+  
+  <outputs>
+    <output1>
+    </output1>
+  </outputs>
+  
+  <processes>
+    <ZipT>
+      <MoC>
+        Timed
+      </MoC>
+      <Type>
+        Zip
+      </Type>
+      <PartitionConst1>
+        1
+      </PartitionConst1>
+      <PartitionConst2>
+        1
+      </PartitionConst2>
+      <In1>
+        InsertU2T/Out1
+      </In1>
+      <In2>
+        inputs/input1
+      </In2>
+      <Out1>
+      </Out1>
+    </ZipT>
+    <StripT2S>
+      <Type>
+        Interface
+      </Type>
+      <Transform>
+        StripT2S
+      </Transform>
+      <ParttionConst>
+        1
+      </ParttionConst>
+      <In1>
+        ZipT/Out1
+      </In1>
+      <Out1>
+      </Out1>
+    </StripT2S>
+    <MealyS>
+      <MoC>
+        Synchronous
+      </MoC>
+      <Type>
+        Mealy
+      </Type>
+      <OutFunc>
+if x[0][0][0] == None or x[0][1][0] == None:
+  return [1]
+else:
+  return [x[0][0][0]+x[0][1][0]+w]
+      </OutFunc>
+      <StateFunc>
+if x[0][0][0] == None:
+  return None
+else:
+  return x[0][0][0]/w
+      </StateFunc>
+      <InitState>
+        12.1
+      </InitState>
+      <In1>
+        StripT2S/Out1
+      </In1>
+      <Out1>
+      </Out1>
+    </MealyS>
+    <Splitter>
+      <Type>
+        Splitter
+      </Type>
+      <In1>
+        MealyS/Out1
+      </In1>
+      <Out1>
+      </Out1>
+      <Out2>
+        outputs/output1
+      </Out2>
+    </Splitter>
+    <StripS2U>
+      <Type>
+        Interface
+      </Type>
+      <Transform>
+        StripS2U
+      </Transform>
+      <In1>
+        Splitter/Out1
+      </In1>
+      <Out1>
+      </Out1>
+    </StripS2U>
+    <InitU>
+      <MoC>
+        Untimed
+      </MoC>
+      <Type>
+        Init
+      </Type>
+      <InitialValue>
+        1
+      </InitialValue>
+      <In1>
+        StripS2U/Out1
+      </In1>
+      <Out1>
+      </Out1>
+    </InitU>
+    <InsertU2T>
+      <Type>
+        Interface
+      </Type>
+      <Transform>
+        InsertU2T
+      </Transform>
+      <PartitionConst>
+        1
+      </PartitionConst>
+      <In1>
+        InitU/Out1
+      </In1>
+      <Out1>
+      </Out1>
+    </InsertU2T>
+  </processes>
+</system>
