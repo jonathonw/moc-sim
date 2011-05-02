@@ -1,0 +1,99 @@
+<?xml version='1.0' ?>
+
+<!--This model is a synchronous feedback loop
+	that consists of a MealyS process conencted
+	to the output of a ZipS process, which is
+	connected to a global input and an InitS
+	process.  The output of the MealyS process
+	is connected to a Splitter, which splits
+	the signal into a global output and
+	the InitS process.
+-->
+<system>
+	<inputs>
+		<input1>
+			1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
+		</input1>
+	</inputs>
+
+	<outputs>
+		<output1>
+		</output1>
+	</outputs>
+
+	<processes>
+    <!--A1-->
+		<processA1>
+			<MoC>
+				Synchronous
+			</MoC>
+			<Type>
+				Zip
+			</Type>
+			<In1>
+				processA4/Out1
+			</In1>
+			<In2>
+				inputs/input1
+			</In2>
+			<Out1>
+			</Out1>
+		</processA1>
+    <!--A2-->
+		<processA2>
+			<MoC>
+				Synchronous
+			</MoC>
+			<Type>
+				Mealy
+			</Type>
+			<!-- Adds two consecutive inputs to the initial state -->
+			<OutFunc>
+				return [x[0][0][0]+x[0][1][0]+w]
+			</OutFunc>
+			<!-- State function is now 3 times the input -->
+			<StateFunc>
+				return 3*x[0][0][0]
+			</StateFunc>
+			<InitState>
+				1
+			</InitState>
+			<In1>
+				processA1/Out1
+			</In1>
+			<Out1>
+			</Out1>
+		</processA2>
+    <!--A3-->
+		<processA3>
+			<Type>
+				Splitter
+			</Type>
+			<In1>
+				processA2/Out1
+			</In1>
+			<Out1>
+			</Out1>
+			<Out2>
+				outputs/output1
+			</Out2>
+		</processA3>
+    <!--A4-->
+		<processA4>
+			<MoC>
+				Synchronous
+			</MoC>
+			<Type>
+				Init
+			</Type>
+			<InitVal>
+				10
+			</InitVal>
+			<In1>
+				processA3/Out1
+			</In1>
+			<Out1>
+			</Out1>
+		</processA4>
+	</processes>
+</system>
