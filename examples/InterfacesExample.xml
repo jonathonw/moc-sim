@@ -1,4 +1,10 @@
 <?xml version='1.0' ?>
+<!--
+	This example is a mixed-MoC example with feedback.
+	There is one global input and one global output.
+	Each of the three processes belongs to a different MoC; there is
+	an interface between each pair of processes.
+	-->
 <system>
   <inputs>
     <input1>
@@ -57,12 +63,22 @@
       <Type>
         Mealy
       </Type>
+      <!--
+        This output function returns 1 if its input contains an absent event.
+        Otherwise, it returns the sum of the two elements of the pair (from
+        the Zip process) and the state.
+      -->
       <OutFunc>
 if x[0][0][0] == None or x[0][1][0] == None:
   return [1]
 else:
   return [x[0][0][0]+x[0][1][0]+w]
       </OutFunc>
+      <!--
+        This next state function returns an absent event if its input contains
+        an absent event. Otherwise, it returns the first element of the pair
+        (from the Zip process) divided by the current state.
+      -->
       <StateFunc>
 if x[0][0][0] == None:
   return None
