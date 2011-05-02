@@ -186,7 +186,7 @@ These sections are created in the following way:
      *  Interfaces:
         Interfaces are defined by the user to transform a 
         signal from one model of computation into another 
-        model of computation.  Interface must be specified as the
+        model of computation.  *Interface* must be specified as the
 		`<type>` of the prcoess.  The specific interface is defined
         by the field `<Transform>`.  It accepts as valid text
         all of the interfaces listed in the interfaces section of
